@@ -1,1 +1,3 @@
-<comp></comp>
+<view class="container">
+    <board/>
+</view>
