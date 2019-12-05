@@ -3,7 +3,10 @@ Component({
      * 组件的属性列表
      */
     properties: {
-        
+        initData: {
+            type: Object,
+            value: {}
+        }
     },
     /**
      * 组件的初始数据
@@ -13,8 +16,8 @@ Component({
         isDrawing: false,
         // 当前最顶层画布节点实例
         activeCanvasNode: null,
-        // 当前最顶层画布上下文
-        context: null,
+        // 最底层层画布上下文
+        context1: null,
         // 当前最顶层画布轨迹数据
         points: [],
         // 当前次绘图轨迹数据
@@ -34,38 +37,45 @@ Component({
                 y: 0
             }
         },
-        settings: {
-            // 输入类型 'pencil'-画笔；'rubber'-橡皮檫
-            brushState: 'pencil',
-            //当前画笔颜色
-            tinctCurr: '#039be5',
-            //画笔尺寸
-            tinctSize: 2
-        }
+        // 画板设置
+        settings: null,
+        // 最顶层层级，目前支持三层(1, 2, 3)
+        zIndexMax: 1
     },
     ready: function () {
-        wx.createSelectorQuery().in(this).select('#board-index-1').fields({
-            node: true,
-            size: true
-        }).exec(res => {
-            const {
-                node,
-                width,
-                height
-            } = res[0];
-            this.data.context = node.getContext('2d');
-            this.data.activeCanvasNode = node;
-            const dpr = wx.getSystemInfoSync().pixelRatio;
-            node.width = width * dpr;
-            node.height = height * dpr;
-            this.data.context.scale(dpr, dpr);
-            node.requestAnimationFrame(this.drawing.bind(this));
-        });
+        this.initBoard();
     },
     /**
      * 组件的方法列表
      */
     methods: {
+        initBoard: function () {
+            wx.createSelectorQuery().in(this).select('#board-index-1').fields({
+                node: true,
+                size: true
+            }).exec(res => {
+                const {
+                    settings,
+                    zIndexInfo
+                } = this.properties.initData;
+                const {
+                    node,
+                    width,
+                    height
+                } = res[0];
+                const dpr = wx.getSystemInfoSync().pixelRatio;
+                node.width = width * dpr;
+                node.height = height * dpr;
+                this.data.context1 = node.getContext('2d');
+                this.data.context1.scale(dpr, dpr);
+                this.data.activeCanvasNode = node;
+                node.requestAnimationFrame(this.drawing.bind(this, 1));
+
+                this.setMaxIndex(zIndexInfo);
+                this.setSettings(settings, 1);
+                this.dataEcho(this.data.settings);
+            });
+        },
         cloneCurrentCoords: function (obj) {
             var _obj = JSON.stringify(obj);
             var objClone = JSON.parse(_obj);
@@ -88,38 +98,14 @@ Component({
             };
         },
         touchstart: function (e) {
-            let color, lineWidth;
             let {
-                context,
                 settings,
-                settings: {
-                    brushState
-                },
-                settings: {
-                    tinctCurr
-                },
-                settings: {
-                    tinctSize
-                }
             } = this.data;
-
-            if (brushState === 'pencil') {
-                color = tinctCurr;
-                lineWidth = tinctSize;
-            } else {
-                color = "#ffffff";
-                lineWidth = 20;
-            }
 
             const coords = this.getCoords(e);
             this.data.coords.current = coords;
             this.data.coords.old = coords;
             this.data.coords.oldMid = this.getMidInputCoords(coords);
-
-            context.lineCap = 'round'; //设置线条端点的样式
-            context.lineJoin = 'round'; //设置两线相交处的样式
-            context.strokeStyle = color; //设置描边颜色
-            context.lineWidth = lineWidth; //设置线条宽度
 
             this.data.curve = {
                 settings,
@@ -136,9 +122,9 @@ Component({
             this.data.isDrawing = false;
             this.data.points.push(this.data.curve);
             this.data.curve = null;
-            console.log(this.data.points)
+            // console.log(JSON.stringify(this.data.points));
         },
-        drawing: function () {
+        drawing: function (zIndex) {
             let {
                 isDrawing,
                 activeCanvasNode,
@@ -146,15 +132,16 @@ Component({
 
             if (isDrawing) {
                 let {
-                    context,
                     coords
                 } = this.data;
+                const ctx = this.data['context' + zIndex];
 
                 const currentMid = this.getMidInputCoords(coords.current);
 
-                context.moveTo(currentMid.x, currentMid.y);
-                context.quadraticCurveTo(coords.old.x, coords.old.y, coords.oldMid.x, coords.oldMid.y);
-                context.stroke();
+                ctx.beginPath();
+                ctx.moveTo(currentMid.x, currentMid.y);
+                ctx.quadraticCurveTo(coords.old.x, coords.old.y, coords.oldMid.x, coords.oldMid.y);
+                ctx.stroke();
 
                 const currentCoords = this.cloneCurrentCoords(coords);
 
@@ -170,7 +157,82 @@ Component({
                 this.data.coords.old = coords.current;
                 this.data.coords.oldMid = currentMid;
             }
-            activeCanvasNode.requestAnimationFrame(this.drawing.bind(this));
+            activeCanvasNode.requestAnimationFrame(this.drawing.bind(this, zIndex));
+        },
+        // 设置最高层级
+        setMaxIndex: function (zIndexInfo) {
+            console.log(zIndexInfo.sort((prev, next) => next.zIndex - prev.zIndex)[0].zIndex);
+            this.data.zIndexMax = zIndexInfo.sort((prev, next) => next.zIndex - prev.zIndex)[0].zIndex;
+        },
+        // 设置
+        setSettings: function (settings, zIndex) {
+            this.data.settings = settings;
+
+            let color, lineWidth;
+            const {
+                settings: {
+                    brushState
+                },
+                settings: {
+                    tinctCurr
+                },
+                settings: {
+                    tinctSize
+                },
+                settings: {
+                    rubberRange
+                }
+            } = this.data;
+
+            const ctx = this.data['context' + zIndex];
+
+            if (brushState === 'pencil') {
+                color = tinctCurr;
+                lineWidth = tinctSize;
+            } else {
+                color = "#ffffff";
+                lineWidth = rubberRange;
+            }
+            ctx.lineCap = 'round'; //设置线条端点的样式
+            ctx.lineJoin = 'round'; //设置两线相交处的样式
+            ctx.strokeStyle = color; //设置描边颜色
+            ctx.lineWidth = lineWidth; //设置线条宽度
+        },
+        // 数据回显
+        dataEcho: function (originalSettings) {
+            const zIndexInfo = this.properties.initData.zIndexInfo;
+            const length = zIndexInfo.length;
+
+            for (let i = 0; i < length; i++) {
+                const info = zIndexInfo[i];
+                const len = info.content.length;
+                if (!len) continue;
+                const zIndex = info.zIndex;
+                const ctx = this.data['context' + zIndex];
+                for (let j = 0; j < len; j++) {
+                    const item = info.content[j];
+                    const point = item.point;
+                    const l = point.length;
+                    if (!l) continue;
+
+                    this.setSettings(item.settings, zIndex);
+
+                    ctx.beginPath();
+                    for (let k = 0; k < l; k++) {
+                        const currentMidX = point[k].currentMidX;
+                        const currentMidY = point[k].currentMidY;
+                        const oldX = point[k].oldX;
+                        const oldY = point[k].oldY;
+                        const oldMidX = point[k].oldMidX;
+                        const oldMidY = point[k].oldMidY;
+                        ctx.moveTo(currentMidX, currentMidY);
+                        ctx.quadraticCurveTo(oldX, oldY, oldMidX, oldMidY);
+                    }
+                    ctx.stroke();
+                }
+            }
+
+            // this.setSettings(originalSettings, zIndex);
         }
     }
 })
