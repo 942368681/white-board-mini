@@ -23,8 +23,6 @@ Component({
         isDrawing: false,
         // 当前最顶层画布节点实例
         activeCanvasNode: null,
-        // 最底层层画布上下文
-        // context1: null,
         // 当前最顶层画布轨迹数据
         points: [],
         // 当前次绘图轨迹数据

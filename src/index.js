@@ -3,18 +3,28 @@ Component({
      * 组件的属性列表
      */
     properties: {
-        
+        initData: {
+            type: Object,
+            value: {}
+        }
     },
     /**
      * 组件的初始数据
      */
     data: {
+        dpr: '',
+        // dom
+        domShow: {
+            canvas1: false,
+            canvas2: false,
+            canvas3: false
+        },
         // 绘图开关
         isDrawing: false,
         // 当前最顶层画布节点实例
         activeCanvasNode: null,
-        // 当前最顶层画布上下文
-        context: null,
+        // 最底层层画布上下文
+        // context1: null,
         // 当前最顶层画布轨迹数据
         points: [],
         // 当前次绘图轨迹数据
@@ -34,38 +44,66 @@ Component({
                 y: 0
             }
         },
-        settings: {
-            // 输入类型 'pencil'-画笔；'rubber'-橡皮檫
-            brushState: 'pencil',
-            //当前画笔颜色
-            tinctCurr: '#039be5',
-            //画笔尺寸
-            tinctSize: 2
-        }
+        // 画板设置
+        settings: null,
+        // 最顶层层级，目前支持三层(1, 2, 3)
+        zIndexMax: 1
     },
     ready: function () {
-        wx.createSelectorQuery().in(this).select('#board-index-1').fields({
-            node: true,
-            size: true
-        }).exec(res => {
-            const {
-                node,
-                width,
-                height
-            } = res[0];
-            this.data.context = node.getContext('2d');
-            this.data.activeCanvasNode = node;
-            const dpr = wx.getSystemInfoSync().pixelRatio;
-            node.width = width * dpr;
-            node.height = height * dpr;
-            this.data.context.scale(dpr, dpr);
-            node.requestAnimationFrame(this.drawing.bind(this));
-        });
+        const {
+            zIndexInfo
+        } = this.properties.initData;
+        this.setDpr();
+        this.setMaxIndex(zIndexInfo);
+        this.setBoardData(zIndexInfo);
+        this.initBoard(zIndexInfo, 0);
     },
     /**
      * 组件的方法列表
      */
     methods: {
+        /**
+         * 
+         * @param {*} zIndexInfo  此时是按层级由低到高( 1， 2， 3 ...)序列化好的zIndexInfo
+         * @param {*} index 索引
+         */
+        initBoard: function (zIndexInfo, index) {
+            const attr = 'domShow.canvas' + (index + 1);
+            this.setData({
+                [attr]: true
+            }, () => {
+                wx.createSelectorQuery().in(this).select('#board-index-' + (index + 1)).fields({
+                    node: true,
+                    size: true
+                }).exec(res => {
+                    const {
+                        dpr
+                    } = this.data;
+                    const {
+                        settings,
+                    } = this.properties.initData;
+                    const {
+                        node,
+                        width,
+                        height
+                    } = res[0];
+                    const zIndex = zIndexInfo[index].zIndex;
+    
+                    node.width = width * dpr;
+                    node.height = height * dpr;
+                    this.data['context' + zIndex] = node.getContext('2d');
+                    this.data['context' + zIndex].scale(dpr, dpr);
+    
+                    this.dataEcho(settings, zIndexInfo[index], zIndex);
+                    if (index === zIndexInfo.length - 1) { // 当前最顶层(操作层)
+                        this.data.activeCanvasNode = node;
+                        node.requestAnimationFrame(this.drawing.bind(this));
+                    } else {
+                        this.initBoard(zIndexInfo, (index + 1));
+                    }
+                });
+            });
+        },
         cloneCurrentCoords: function (obj) {
             var _obj = JSON.stringify(obj);
             var objClone = JSON.parse(_obj);
@@ -88,38 +126,14 @@ Component({
             };
         },
         touchstart: function (e) {
-            let color, lineWidth;
             let {
-                context,
                 settings,
-                settings: {
-                    brushState
-                },
-                settings: {
-                    tinctCurr
-                },
-                settings: {
-                    tinctSize
-                }
             } = this.data;
-
-            if (brushState === 'pencil') {
-                color = tinctCurr;
-                lineWidth = tinctSize;
-            } else {
-                color = "#ffffff";
-                lineWidth = 20;
-            }
 
             const coords = this.getCoords(e);
             this.data.coords.current = coords;
             this.data.coords.old = coords;
             this.data.coords.oldMid = this.getMidInputCoords(coords);
-
-            context.lineCap = 'round'; //设置线条端点的样式
-            context.lineJoin = 'round'; //设置两线相交处的样式
-            context.strokeStyle = color; //设置描边颜色
-            context.lineWidth = lineWidth; //设置线条宽度
 
             this.data.curve = {
                 settings,
@@ -133,10 +147,14 @@ Component({
             this.data.coords.current = coords;
         },
         touchEnd: function () {
+            const {
+                points
+            } = this.data;
             this.data.isDrawing = false;
-            this.data.points.push(this.data.curve);
+            points[points.length - 1].content.push(this.data.curve);
             this.data.curve = null;
-            console.log(this.data.points)
+            // console.log(JSON.stringify(this.data.points));
+            // console.log(JSON.stringify(points[points.length - 1].content));
         },
         drawing: function () {
             let {
@@ -146,15 +164,17 @@ Component({
 
             if (isDrawing) {
                 let {
-                    context,
-                    coords
+                    coords,
+                    zIndexMax
                 } = this.data;
+                const ctx = this.data['context' + zIndexMax];
 
                 const currentMid = this.getMidInputCoords(coords.current);
 
-                context.moveTo(currentMid.x, currentMid.y);
-                context.quadraticCurveTo(coords.old.x, coords.old.y, coords.oldMid.x, coords.oldMid.y);
-                context.stroke();
+                ctx.beginPath();
+                ctx.moveTo(currentMid.x, currentMid.y);
+                ctx.quadraticCurveTo(coords.old.x, coords.old.y, coords.oldMid.x, coords.oldMid.y);
+                ctx.stroke();
 
                 const currentCoords = this.cloneCurrentCoords(coords);
 
@@ -171,6 +191,83 @@ Component({
                 this.data.coords.oldMid = currentMid;
             }
             activeCanvasNode.requestAnimationFrame(this.drawing.bind(this));
+        },
+        // 设置dpr
+        setDpr: function () {
+            this.data.dpr = wx.getSystemInfoSync().pixelRatio;
+        },
+        // 设置当前层数据
+        setBoardData: function (zIndexInfo) {
+            this.data.points = zIndexInfo;
+        },
+        // 设置最高层级
+        setMaxIndex: function (zIndexInfo) {
+            this.data.zIndexMax = zIndexInfo.sort((prev, next) => prev.zIndex - next.zIndex)[zIndexInfo.length - 1].zIndex;
+        },
+        // 设置
+        setSettings: function (settings, zIndex) {
+            this.data.settings = settings;
+            
+            let color, lineWidth;
+            const {
+                settings: {
+                    brushState
+                },
+                settings: {
+                    tinctCurr
+                },
+                settings: {
+                    tinctSize
+                },
+                settings: {
+                    rubberRange
+                }
+            } = this.data;
+            const ctx = this.data['context' + zIndex];
+
+            if (brushState === 'pencil') {
+                color = tinctCurr;
+                lineWidth = tinctSize;
+            } else {
+                color = "#ffffff";
+                lineWidth = rubberRange;
+            }
+            ctx.lineCap = 'round'; //设置线条端点的样式
+            ctx.lineJoin = 'round'; //设置两线相交处的样式
+            ctx.strokeStyle = color; //设置描边颜色
+            ctx.lineWidth = lineWidth; //设置线条宽度
+        },
+        // 数据回显
+        dataEcho: function (originalSettings, info, zIndex) {
+
+            const len = info.content.length;
+            if (len) {
+                const ctx = this.data['context' + zIndex];
+                for (let j = 0; j < len; j++) {
+                    const item = info.content[j];
+                    const point = item.point;
+                    const l = point.length;
+
+                    if (!l) continue;
+    
+                    this.setSettings(item.settings, zIndex);
+    
+                    ctx.beginPath();
+                    for (let k = 0; k < l; k++) {
+                        const currentMidX = point[k].currentMidX;
+                        const currentMidY = point[k].currentMidY;
+                        const oldX = point[k].oldX;
+                        const oldY = point[k].oldY;
+                        const oldMidX = point[k].oldMidX;
+                        const oldMidY = point[k].oldMidY;
+                        ctx.moveTo(currentMidX, currentMidY);
+                        ctx.quadraticCurveTo(oldX, oldY, oldMidX, oldMidY);
+                    }
+                    ctx.stroke();
+                }
+            }
+
+            this.setSettings(originalSettings, zIndex);
         }
     }
 })
