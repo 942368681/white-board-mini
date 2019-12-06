@@ -1,98 +1,18 @@
 module.exports = {
     "settings": {
         "brushState": "pencil", // rubber, pencil
-        "tinctCurr": "#000",
-        "tinctSize": 2,
+        "tinctCurr": "#FF8611",
+        "tinctSize": 6,
         "rubberRange": 20
     },
     zIndexInfo: [{
         "zIndex": 1,
-        content: [{
-            "settings": {
-                "brushState": "pencil",
-                "tinctCurr": "#039be5",
-                "tinctSize": 2,
-                "rubberRange": 20
-            },
-            "point": [{
-                "currentMidX": 179,
-                "currentMidY": 156,
-                "oldX": 179.59375,
-                "oldY": 156,
-                "oldMidX": 179,
-                "oldMidY": 156
-            }, {
-                "currentMidX": 179,
-                "currentMidY": 156,
-                "oldX": 179.59375,
-                "oldY": 156,
-                "oldMidX": 179,
-                "oldMidY": 156
-            }, {
-                "currentMidX": 176,
-                "currentMidY": 158,
-                "oldX": 178.59375,
-                "oldY": 156,
-                "oldMidX": 179,
-                "oldMidY": 156
-            }, {
-                "currentMidX": 170,
-                "currentMidY": 162,
-                "oldX": 173.59375,
-                "oldY": 160,
-                "oldMidX": 176,
-                "oldMidY": 158
-            }, {
-                "currentMidX": 160,
-                "currentMidY": 168,
-                "oldX": 166.59375,
-                "oldY": 164,
-                "oldMidX": 170,
-                "oldMidY": 162
-            }]
-        }, {
-            "settings": {
-                "brushState": "pencil",
-                "tinctCurr": "#FF9500",
-                "tinctSize": 2,
-                "rubberRange": 20
-            },
-            "point": [{
-                "currentMidX": 176,
-                "currentMidY": 244,
-                "oldX": 176.59375,
-                "oldY": 244,
-                "oldMidX": 176,
-                "oldMidY": 244
-            }, {
-                "currentMidX": 176,
-                "currentMidY": 244,
-                "oldX": 176.59375,
-                "oldY": 244,
-                "oldMidX": 176,
-                "oldMidY": 244
-            }, {
-                "currentMidX": 176,
-                "currentMidY": 244,
-                "oldX": 176.59375,
-                "oldY": 244,
-                "oldMidX": 176,
-                "oldMidY": 244
-            }, {
-                "currentMidX": 173,
-                "currentMidY": 244,
-                "oldX": 175.59375,
-                "oldY": 244,
-                "oldMidX": 176,
-                "oldMidY": 244
-            }, {
-                "currentMidX": 164,
-                "currentMidY": 247,
-                "oldX": 170.59375,
-                "oldY": 245,
-                "oldMidX": 173,
-                "oldMidY": 244
-            }]
-        }]
+        "content": [{"settings":{"brushState":"pencil","tinctCurr":"#000000","tinctSize":2,"rubberRange":20},"point":[{"currentMidX":84,"currentMidY":41,"oldX":85.59375,"oldY":41,"oldMidX":85,"oldMidY":41},{"currentMidX":81,"currentMidY":41,"oldX":83.59375,"oldY":41,"oldMidX":84,"oldMidY":41},{"currentMidX":77,"currentMidY":43,"oldX":79.59375,"oldY":42,"oldMidX":81,"oldMidY":41},{"currentMidX":73,"currentMidY":46,"oldX":74.59375,"oldY":45,"oldMidX":77,"oldMidY":43},{"currentMidX":69,"currentMidY":48,"oldX":71.59375,"oldY":47,"oldMidX":73,"oldMidY":46},{"currentMidX":66,"currentMidY":51,"oldX":66.59375,"oldY":50,"oldMidX":69,"oldMidY":48},{"currentMidX":65,"currentMidY":53,"oldX":65.59375,"oldY":53,"oldMidX":66,"oldMidY":51}]},{"settings":{"brushState":"pencil","tinctCurr":"#000000","tinctSize":2,"rubberRange":20},"point":[{"currentMidX":85,"currentMidY":45,"oldX":85.59375,"oldY":45,"oldMidX":85,"oldMidY":45},{"currentMidX":85,"currentMidY":45,"oldX":85.59375,"oldY":45,"oldMidX":85,"oldMidY":45},{"currentMidX":85,"currentMidY":46,"oldX":85.59375,"oldY":45,"oldMidX":85,"oldMidY":45},{"currentMidX":85,"currentMidY":52,"oldX":85.59375,"oldY":48,"oldMidX":85,"oldMidY":46},{"currentMidX":84,"currentMidY":62,"oldX":84.59375,"oldY":56,"oldMidX":85,"oldMidY":52},{"currentMidX":82,"currentMidY":75,"oldX":83.59375,"oldY":68,"oldMidX":84,"oldMidY":62},{"currentMidX":81,"currentMidY":88,"oldX":81.59375,"oldY":82,"oldMidX":82,"oldMidY":75},{"currentMidX":79,"currentMidY":101,"oldX":80.59375,"oldY":95,"oldMidX":81,"oldMidY":88},{"currentMidX":78,"currentMidY":108,"oldX":78.59375,"oldY":107,"oldMidX":79,"oldMidY":101},{"currentMidX":77,"currentMidY":112,"oldX":77.59375,"oldY":110,"oldMidX":78,"oldMidY":108},{"currentMidX":77,"currentMidY":115,"oldX":77.59375,"oldY":115,"oldMidX":77,"oldMidY":112}]},{"settings":{"brushState":"pencil","tinctCurr":"#000000","tinctSize":2,"rubberRange":20},"point":[{"currentMidX":54,"currentMidY":117,"oldX":54.59375,"oldY":117,"oldMidX":54,"oldMidY":117},{"currentMidX":54,"currentMidY":117,"oldX":54.59375,"oldY":117,"oldMidX":54,"oldMidY":117},{"currentMidX":54,"currentMidY":117,"oldX":54.59375,"oldY":117,"oldMidX":54,"oldMidY":117},{"currentMidX":56,"currentMidY":117,"oldX":54.59375,"oldY":117,"oldMidX":54,"oldMidY":117},{"currentMidX":62,"currentMidY":117,"oldX":57.59375,"oldY":117,"oldMidX":56,"oldMidY":117},{"currentMidX":75,"currentMidY":117,"oldX":67.59375,"oldY":117,"oldMidX":62,"oldMidY":117},{"currentMidX":90,"currentMidY":118,"oldX":83.59375,"oldY":118,"oldMidX":75,"oldMidY":117},{"currentMidX":98,"currentMidY":118,"oldX":96.59375,"oldY":118,"oldMidX":90,"oldMidY":118},{"currentMidX":100,"currentMidY":119,"oldX":100.59375,"oldY":119,"oldMidX":98,"oldMidY":118},{"currentMidX":100,"currentMidY":119,"oldX":100.59375,"oldY":119,"oldMidX":100,"oldMidY":119},{"currentMidX":100,"currentMidY":119,"oldX":100.59375,"oldY":119,"oldMidX":100,"oldMidY":119},{"currentMidX":100,"currentMidY":119,"oldX":100.59375,"oldY":119,"oldMidX":100,"oldMidY":119}]}]
+    }, {
+        "zIndex": 2,
+        "content": [{"settings":{"brushState":"pencil","tinctCurr":"#039be5","tinctSize":4,"rubberRange":20},"point":[{"currentMidX":141,"currentMidY":210,"oldX":140.59375,"oldY":211,"oldMidX":140,"oldMidY":211},{"currentMidX":143,"currentMidY":210,"oldX":142.59375,"oldY":210,"oldMidX":141,"oldMidY":210},{"currentMidX":146,"currentMidY":209,"oldX":143.59375,"oldY":210,"oldMidX":143,"oldMidY":210},{"currentMidX":150,"currentMidY":207,"oldX":148.59375,"oldY":208,"oldMidX":146,"oldMidY":209},{"currentMidX":155,"currentMidY":206,"oldX":152.59375,"oldY":207,"oldMidX":150,"oldMidY":207},{"currentMidX":160,"currentMidY":206,"oldX":157.59375,"oldY":206,"oldMidX":155,"oldMidY":206},{"currentMidX":166,"currentMidY":206,"oldX":163.59375,"oldY":206,"oldMidX":160,"oldMidY":206},{"currentMidX":172,"currentMidY":206,"oldX":169.59375,"oldY":206,"oldMidX":166,"oldMidY":206},{"currentMidX":176,"currentMidY":207,"oldX":174.59375,"oldY":206,"oldMidX":172,"oldMidY":206},{"currentMidX":179,"currentMidY":210,"oldX":178.59375,"oldY":209,"oldMidX":176,"oldMidY":207},{"currentMidX":181,"currentMidY":213,"oldX":180.59375,"oldY":211,"oldMidX":179,"oldMidY":210},{"currentMidX":181,"currentMidY":217,"oldX":181.59375,"oldY":215,"oldMidX":181,"oldMidY":213},{"currentMidX":181,"currentMidY":223,"oldX":181.59375,"oldY":219,"oldMidX":181,"oldMidY":217},{"currentMidX":181,"currentMidY":230,"oldX":181.59375,"oldY":227,"oldMidX":181,"oldMidY":223},{"currentMidX":180,"currentMidY":238,"oldX":181.59375,"oldY":233,"oldMidX":181,"oldMidY":230},{"currentMidX":177,"currentMidY":247,"oldX":178.59375,"oldY":243,"oldMidX":180,"oldMidY":238},{"currentMidX":174,"currentMidY":256,"oldX":176.59375,"oldY":252,"oldMidX":177,"oldMidY":247},{"currentMidX":169,"currentMidY":265,"oldX":171.59375,"oldY":261,"oldMidX":174,"oldMidY":256},{"currentMidX":165,"currentMidY":272,"oldX":166.59375,"oldY":269,"oldMidX":169,"oldMidY":265},{"currentMidX":160,"currentMidY":278,"oldX":163.59375,"oldY":275,"oldMidX":165,"oldMidY":272},{"currentMidX":153,"currentMidY":283,"oldX":156.59375,"oldY":281,"oldMidX":160,"oldMidY":278},{"currentMidX":147,"currentMidY":286,"oldX":150.59375,"oldY":285,"oldMidX":153,"oldMidY":283},{"currentMidX":142,"currentMidY":288,"oldX":143.59375,"oldY":288,"oldMidX":147,"oldMidY":286},{"currentMidX":140,"currentMidY":288,"oldX":140.59375,"oldY":288,"oldMidX":142,"oldMidY":288},{"currentMidX":139,"currentMidY":288,"oldX":140.59375,"oldY":288,"oldMidX":140,"oldMidY":288},{"currentMidX":137,"currentMidY":289,"oldX":137.59375,"oldY":289,"oldMidX":139,"oldMidY":288},{"currentMidX":137,"currentMidY":289,"oldX":137.59375,"oldY":289,"oldMidX":137,"oldMidY":289},{"currentMidX":139,"currentMidY":289,"oldX":137.59375,"oldY":289,"oldMidX":137,"oldMidY":289},{"currentMidX":143,"currentMidY":289,"oldX":140.59375,"oldY":289,"oldMidX":139,"oldMidY":289},{"currentMidX":156,"currentMidY":288,"oldX":146.59375,"oldY":289,"oldMidX":143,"oldMidY":289},{"currentMidX":175,"currentMidY":288,"oldX":165.59375,"oldY":288,"oldMidX":156,"oldMidY":288},{"currentMidX":189,"currentMidY":287,"oldX":185.59375,"oldY":288,"oldMidX":175,"oldMidY":288},{"currentMidX":193,"currentMidY":286,"oldX":192.59375,"oldY":287,"oldMidX":189,"oldMidY":287},{"currentMidX":193,"currentMidY":286,"oldX":193.59375,"oldY":286,"oldMidX":193,"oldMidY":286},{"currentMidX":193,"currentMidY":286,"oldX":193.59375,"oldY":286,"oldMidX":193,"oldMidY":286},{"currentMidX":193,"currentMidY":286,"oldX":193.59375,"oldY":286,"oldMidX":193,"oldMidY":286}]}]
+    }, {
+        "zIndex": 3,
+        "content": [{"settings":{"brushState":"pencil","tinctCurr":"#FF8611","tinctSize":6,"rubberRange":20},"point":[{"currentMidX":226,"currentMidY":376,"oldX":225.59375,"oldY":376,"oldMidX":225,"oldMidY":376},{"currentMidX":227,"currentMidY":376,"oldX":226.59375,"oldY":376,"oldMidX":226,"oldMidY":376},{"currentMidX":230,"currentMidY":376,"oldX":228.59375,"oldY":376,"oldMidX":227,"oldMidY":376},{"currentMidX":235,"currentMidY":376,"oldX":232.59375,"oldY":376,"oldMidX":230,"oldMidY":376},{"currentMidX":243,"currentMidY":376,"oldX":237.59375,"oldY":376,"oldMidX":235,"oldMidY":376},{"currentMidX":251,"currentMidY":378,"oldX":248.59375,"oldY":377,"oldMidX":243,"oldMidY":376},{"currentMidX":258,"currentMidY":381,"oldX":254.59375,"oldY":379,"oldMidX":251,"oldMidY":378},{"currentMidX":263,"currentMidY":384,"oldX":261.59375,"oldY":383,"oldMidX":258,"oldMidY":381},{"currentMidX":267,"currentMidY":389,"oldX":265.59375,"oldY":386,"oldMidX":263,"oldMidY":384},{"currentMidX":270,"currentMidY":394,"oldX":269.59375,"oldY":393,"oldMidX":267,"oldMidY":389},{"currentMidX":271,"currentMidY":398,"oldX":270.59375,"oldY":396,"oldMidX":270,"oldMidY":394},{"currentMidX":271,"currentMidY":403,"oldX":271.59375,"oldY":401,"oldMidX":271,"oldMidY":398},{"currentMidX":268,"currentMidY":407,"oldX":271.59375,"oldY":405,"oldMidX":271,"oldMidY":403},{"currentMidX":261,"currentMidY":412,"oldX":265.59375,"oldY":410,"oldMidX":268,"oldMidY":407},{"currentMidX":253,"currentMidY":415,"oldX":257.59375,"oldY":414,"oldMidX":261,"oldMidY":412},{"currentMidX":247,"currentMidY":416,"oldX":249.59375,"oldY":416,"oldMidX":253,"oldMidY":415},{"currentMidX":244,"currentMidY":417,"oldX":244.59375,"oldY":417,"oldMidX":247,"oldMidY":416},{"currentMidX":244,"currentMidY":417,"oldX":244.59375,"oldY":417,"oldMidX":244,"oldMidY":417},{"currentMidX":244,"currentMidY":417,"oldX":244.59375,"oldY":417,"oldMidX":244,"oldMidY":417},{"currentMidX":244,"currentMidY":417,"oldX":244.59375,"oldY":417,"oldMidX":244,"oldMidY":417},{"currentMidX":244,"currentMidY":417,"oldX":244.59375,"oldY":417,"oldMidX":244,"oldMidY":417},{"currentMidX":246,"currentMidY":418,"oldX":244.59375,"oldY":417,"oldMidX":244,"oldMidY":417},{"currentMidX":255,"currentMidY":420,"oldX":248.59375,"oldY":419,"oldMidX":246,"oldMidY":418},{"currentMidX":270,"currentMidY":425,"oldX":262.59375,"oldY":422,"oldMidX":255,"oldMidY":420},{"currentMidX":282,"currentMidY":430,"oldX":278.59375,"oldY":428,"oldMidX":270,"oldMidY":425},{"currentMidX":287,"currentMidY":435,"oldX":286.59375,"oldY":433,"oldMidX":282,"oldMidY":430},{"currentMidX":287,"currentMidY":441,"oldX":287.59375,"oldY":437,"oldMidX":287,"oldMidY":435},{"currentMidX":285,"currentMidY":448,"oldX":287.59375,"oldY":445,"oldMidX":287,"oldMidY":441},{"currentMidX":280,"currentMidY":452,"oldX":282.59375,"oldY":451,"oldMidX":285,"oldMidY":448},{"currentMidX":272,"currentMidY":456,"oldX":277.59375,"oldY":454,"oldMidX":280,"oldMidY":452},{"currentMidX":260,"currentMidY":461,"oldX":266.59375,"oldY":459,"oldMidX":272,"oldMidY":456},{"currentMidX":246,"currentMidY":466,"oldX":253.59375,"oldY":464,"oldMidX":260,"oldMidY":461},{"currentMidX":235,"currentMidY":468,"oldX":239.59375,"oldY":468,"oldMidX":246,"oldMidY":466},{"currentMidX":225,"currentMidY":468,"oldX":231.59375,"oldY":468,"oldMidX":235,"oldMidY":468},{"currentMidX":214,"currentMidY":467,"oldX":218.59375,"oldY":468,"oldMidX":225,"oldMidY":468},{"currentMidX":210,"currentMidY":466,"oldX":210.59375,"oldY":467,"oldMidX":214,"oldMidY":467}]}]
     }]
 }

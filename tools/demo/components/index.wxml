@@ -1,3 +1,5 @@
 <view class='board-container' id='board-box'>
-    <canvas type="2d" canvas-id="board-index-1" id="board-index-1" bindtouchstart='touchstart' bindtouchmove='touchMove' bindtouchend='touchEnd' disable-scroll='true'></canvas>
+    <canvas type="2d" id="board-index-1" bindtouchstart='touchstart' bindtouchmove='touchMove' bindtouchend='touchEnd' disable-scroll='true' wx:if="{{ domShow.canvas1 }}"></canvas>
+    <canvas type="2d" id="board-index-2" bindtouchstart='touchstart' bindtouchmove='touchMove' bindtouchend='touchEnd' disable-scroll='true' wx:if="{{ domShow.canvas2 }}"></canvas>
+    <canvas type="2d" id="board-index-3" bindtouchstart='touchstart' bindtouchmove='touchMove' bindtouchend='touchEnd' disable-scroll='true' wx:if="{{ domShow.canvas3 }}"></canvas>
 </view>
