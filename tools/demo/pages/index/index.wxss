@@ -1,7 +1,60 @@
 .container {
-    margin: 50px auto 0;
+
+}
+.tool-bar {
     width: 80%;
-    height: 560px;
-    position: relative;
+    margin: 0 auto 40rpx;
+}
+.input-type {
+    display: flex;
+    align-items: center;
+    height: 60rpx;
+    margin-bottom: 28rpx;
+}
+.input-type icon {
+    display: flex;
+    height: 60rpx;
+    align-items: center;
+    justify-content: center;
+    width: 100rpx;
+    font-size: 40rpx;
+    border-radius: 10rpx;
+    margin-right: 20rpx;
+}
+.input-type icon.active {
+    background: #ededed;
+}
+
+.color-list {
+    height: 50rpx;
+    overflow: hidden;
+    white-space: nowrap;
+    vertical-align: middle;
+    margin-bottom: 20rpx;
+}
+.color-list .color-item {
+    width: 50rpx;
+    height: 50rpx;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 20rpx;
+    box-sizing: border-box;
+}
+.color-list .color-item view {
+    width: 42rpx;
+    height: 42rpx;
+    border-radius: 50%;
+    margin: 2rpx auto 0;
+}
+.color-list .color-item.active {
+    border: 1rpx solid #21c221;
+}
+.rubber-range slider {
+    margin: 0;
+}
+.board {
+    margin: auto;
+    width: 80%;
+    height: 900rpx;
     border: 1px solid #333;
 }

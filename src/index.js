@@ -23,8 +23,6 @@ Component({
         isDrawing: false,
         // 当前最顶层画布节点实例
         activeCanvasNode: null,
-        // 最底层层画布上下文
-        // context1: null,
         // 当前最顶层画布轨迹数据
         points: [],
         // 当前次绘图轨迹数据
@@ -206,36 +204,37 @@ Component({
         },
         // 设置
         setSettings: function (settings, zIndex) {
-            this.data.settings = settings;
+            this.data.settings = {...this.data.settings, ...settings};
             
-            let color, lineWidth;
+            let color, width;
             const {
                 settings: {
-                    brushState
+                    inputType
                 },
                 settings: {
-                    tinctCurr
+                    strokeStyle
                 },
                 settings: {
-                    tinctSize
+                    lineWidth
                 },
                 settings: {
                     rubberRange
-                }
+                },
+                zIndexMax
             } = this.data;
-            const ctx = this.data['context' + zIndex];
+            const ctx = zIndex ? this.data['context' + zIndex] : this.data['context' + zIndexMax];
 
-            if (brushState === 'pencil') {
-                color = tinctCurr;
-                lineWidth = tinctSize;
+            if (inputType === 'pencil') {
+                color = strokeStyle;
+                width = lineWidth;
             } else {
-                color = "#ffffff";
-                lineWidth = rubberRange;
+                color = '#ffffff';
+                width = rubberRange;
             }
             ctx.lineCap = 'round'; //设置线条端点的样式
             ctx.lineJoin = 'round'; //设置两线相交处的样式
             ctx.strokeStyle = color; //设置描边颜色
-            ctx.lineWidth = lineWidth; //设置线条宽度
+            ctx.lineWidth = width; //设置线条宽度
         },
         // 数据回显
         dataEcho: function (originalSettings, info, zIndex) {
