@@ -1,0 +1,74 @@
+// var startX = 0;
+// var startY = 0;
+// var lastLeft = lastTop = 50;
+
+var rect = {
+    startX: 0,
+    startY: 0,
+    width: 0,
+    height: 0
+}
+
+function touchstart(event, ins) {
+    if (!event.currentTarget.dataset.type) return;
+
+    var touch = event.touches[0] || event.changedTouches[0];
+    var parentNodeOffset = event.currentTarget;
+    rect.startX = touch.pageX - parentNodeOffset.offsetLeft;
+    rect.startY = touch.pageY - parentNodeOffset.offsetTop;
+    ins.selectComponent('.rubber-box').setStyle({
+        left: rect.startX + 'px',
+        top: rect.startY + 'px'
+    });
+}
+
+function touchmove(event, ins) {
+    if (!event.currentTarget.dataset.type) return;
+
+    var touch = event.touches[0] || event.changedTouches[0];
+    var parentNodeOffset = event.currentTarget;
+    var moveToX = touch.pageX - parentNodeOffset.offsetLeft;
+    var moveToY = touch.pageY - parentNodeOffset.offsetTop;
+    var startX = Math.min(moveToX, rect.startX);
+    var startY = Math.min(moveToY, rect.startY);
+    var width = Math.abs(moveToX - rect.startX);
+    var height = Math.abs(moveToY - rect.startY);
+    
+    ins.selectComponent('.rubber-box').setStyle({
+        left: startX + 'px',
+        top: startY + 'px',
+        width: width + 'px',
+        height: height + 'px'
+    });
+
+    rect.width = width;
+    rect.height = height;
+}
+
+function touchend(event, ins) {
+    if (!event.currentTarget.dataset.type) return;
+
+    ins.callMethod('rubberEnd', deepClone(rect));
+
+    ins.selectComponent('.rubber-box').setStyle({
+        left: 0,
+        top: 0,
+        width: 0,
+        height: 0
+    });
+
+    rect.startX = 0;
+    rect.startY = 0;
+    rect.width = 0;
+    rect.height = 0;
+}
+
+function deepClone (obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
+module.exports = {
+    touchstart: touchstart,
+    touchmove: touchmove,
+    touchend: touchend
+}

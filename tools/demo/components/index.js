@@ -19,6 +19,15 @@ Component({
             canvas2: false,
             canvas3: false
         },
+        // 当前是否为擦除功能
+        rubberActive: false,
+        // 擦除框样式
+        rubberRect: {
+            left: 0,
+            top: 0,
+            width: 100,
+            height: 100
+        }, 
         // 绘图开关
         isDrawing: false,
         // 当前最顶层画布节点实例
@@ -123,10 +132,19 @@ Component({
                 y: dataCoords.old.y + coords.y >> 1
             };
         },
+        rubberEnd: function ({startX, startY, width, height}) {
+            console.log(startX, startY, width, height);
+            // this.setData({
+            //     rubberActive: false
+            // });
+        },
         touchstart: function (e) {
             let {
-                settings,
+                rubberActive,
+                settings
             } = this.data;
+
+            if (rubberActive) return;
 
             const coords = this.getCoords(e);
             this.data.coords.current = coords;
@@ -141,13 +159,23 @@ Component({
             this.data.isDrawing = true;
         },
         touchMove: function (e) {
+            let {
+                rubberActive
+            } = this.data;
+
+            if (rubberActive) return;
+
             const coords = this.getCoords(e);
             this.data.coords.current = coords;
         },
         touchEnd: function () {
             const {
+                rubberActive,
                 points
             } = this.data;
+
+            if (rubberActive) return;
+
             this.data.isDrawing = false;
             points[points.length - 1].content.push(this.data.curve);
             this.data.curve = null;
@@ -225,11 +253,17 @@ Component({
             const ctx = zIndex ? this.data['context' + zIndex] : this.data['context' + zIndexMax];
 
             if (inputType === 'pencil') {
+                this.setData({
+                    rubberActive: false
+                });
                 color = strokeStyle;
                 width = lineWidth;
-            } else {
-                color = '#ffffff';
-                width = rubberRange;
+            } else if (inputType === 'rubber') {
+                // color = '#ffffff';
+                // width = rubberRange;
+                this.setData({
+                    rubberActive: true
+                });
             }
             ctx.lineCap = 'round'; //设置线条端点的样式
             ctx.lineJoin = 'round'; //设置两线相交处的样式
