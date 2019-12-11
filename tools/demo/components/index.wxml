@@ -1,7 +1,7 @@
 <view 
     class='board-container' 
     id='board-box' 
-    data-type="{{ rubberActive }}"
+    data-isRubber="{{ rubberActive }}"
     bindtouchstart="{{ rubber.touchstart }}" 
     bindtouchmove="{{ rubber.touchmove }}" 
     bindtouchend="{{ rubber.touchend }}"
@@ -13,10 +13,10 @@
     <canvas type="2d" id="board-index-3" bindtouchstart='touchstart' bindtouchmove='touchMove' bindtouchend='touchEnd' disable-scroll='true' wx:if="{{ domShow.canvas3 }}"></canvas>
 
     <!-- 擦除框 -->
-    <view 
+    <cover-view 
         wx:if="{{ rubberActive }}" 
         class="rubber-box" 
-    ></view>
+    ></cover-view>
 </view>
 
 <!-- 擦除框组件 -->

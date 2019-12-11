@@ -1,5 +1,23 @@
-<view class='board-container' id='board-box'>
+<view 
+    class='board-container' 
+    id='board-box' 
+    data-isRubber="{{ rubberActive }}"
+    bindtouchstart="{{ rubber.touchstart }}" 
+    bindtouchmove="{{ rubber.touchmove }}" 
+    bindtouchend="{{ rubber.touchend }}"
+>
+
+    <!-- 画板区域 -->
     <canvas type="2d" id="board-index-1" bindtouchstart='touchstart' bindtouchmove='touchMove' bindtouchend='touchEnd' disable-scroll='true' wx:if="{{ domShow.canvas1 }}"></canvas>
     <canvas type="2d" id="board-index-2" bindtouchstart='touchstart' bindtouchmove='touchMove' bindtouchend='touchEnd' disable-scroll='true' wx:if="{{ domShow.canvas2 }}"></canvas>
     <canvas type="2d" id="board-index-3" bindtouchstart='touchstart' bindtouchmove='touchMove' bindtouchend='touchEnd' disable-scroll='true' wx:if="{{ domShow.canvas3 }}"></canvas>
+
+    <!-- 擦除框 -->
+    <cover-view 
+        wx:if="{{ rubberActive }}" 
+        class="rubber-box" 
+    ></cover-view>
 </view>
+
+<!-- 擦除框组件 -->
+<wxs module="rubber" src="./wxs/rubber.wxs"></wxs>

@@ -12,7 +12,7 @@ Page({
         // 当前颜色
         currColorIndex: 0,
         // 当前粗细
-        lineWidth: 6,
+        lineWidth: 2,
         // 橡皮范围
         rubberRange: 20
     },
@@ -31,7 +31,7 @@ Page({
             rubberRange,
             strokeStyle: colorList[currColorIndex]
         };
-        boardData.settings = settings;
+        boardData.canvasSettings = settings;
 
         this.setData({
             boardData
