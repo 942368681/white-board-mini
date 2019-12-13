@@ -1,4 +1,4 @@
-<view 
+<movable-area 
     class='board-container' 
     id='board-box' 
     data-isRubber="{{ rubberActive }}"
@@ -6,6 +6,10 @@
     bindtouchmove="{{ rubber.touchmove }}" 
     bindtouchend="{{ rubber.touchend }}"
 >
+    <!-- 多媒体区域 -->
+    <movable-view class="move-box {{ handleComps ? 'active' : '' }}" direction="all">
+        <video id="myVideo" class="video-comp" src="http://wxsnsdy.tc.qq.com/105/20210/snsdyvideodownload?filekey=30280201010421301f0201690402534804102ca905ce620b1241b726bc41dcff44e00204012882540400&bizid=1023&hy=SH&fileparam=302c020101042530230204136ffd93020457e3c4ff02024ef202031e8d7f02030f42400204045a320a0201000400" controls></video>
+    </movable-view>
 
     <!-- 画板区域 -->
     <canvas type="2d" id="board-index-1" bindtouchstart='touchstart' bindtouchmove='touchMove' bindtouchend='touchEnd' disable-scroll='true' wx:if="{{ domShow.canvas1 }}"></canvas>
@@ -17,7 +21,7 @@
         wx:if="{{ rubberActive }}" 
         class="rubber-box" 
     ></cover-view>
-</view>
+</movable-area>
 
 <!-- 擦除框组件 -->
 <wxs module="rubber" src="./wxs/rubber.wxs"></wxs>

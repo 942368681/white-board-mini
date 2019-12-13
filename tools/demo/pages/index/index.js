@@ -14,7 +14,17 @@ Page({
         // 当前粗细
         lineWidth: 2,
         // 橡皮范围
-        rubberRange: 20
+        rubberRange: 20,
+        // 多媒体可操控开关
+        switchChecked: false
+    },
+    switchChange: function (ev) {
+        const compInstance = this.selectComponent('.board-comp');
+        if (ev.detail.value) {
+            compInstance.changeHandleComps(true);
+        } else {
+            compInstance.changeHandleComps(false);
+        }
     },
     onLoad: function () {
         const {

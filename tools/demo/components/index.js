@@ -21,6 +21,8 @@ Component({
             canvas2: false,
             canvas3: false
         },
+        // 多媒体组件可操作（false层级:1, true层级最高）
+        handleComps: false,
         // 当前是否为擦除功能
         rubberActive: false,
         // 擦除框样式
@@ -454,6 +456,13 @@ Component({
             }
 
             this.setSettings(originalSettings, zIndex);
+        },
+        // 更改多媒体组件层级
+        changeHandleComps: function (handleComps) {
+            console.log(handleComps);
+            this.setData({
+                handleComps
+            });
         }
     }
 })

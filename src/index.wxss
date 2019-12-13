@@ -14,24 +14,35 @@
 }
 
 .board-container canvas:nth-of-type(1) {
-    z-index: 1;
+    z-index: 7;
 }
 
 .board-container canvas:nth-of-type(2) {
-    z-index: 2;
+    z-index: 8;
 }
 
 .board-container canvas:nth-of-type(3) {
-    z-index: 3;
+    z-index: 9;
 }
 
 .rubber-box {
     z-index: 999;
     position: absolute;
     background: rgba(170, 170, 170, 0.6);
-    border: 1px dashed #eee;
     width: 0;
     height: 0;
     left: 0;
     top: 0;
+}
+.move-box {
+    width: 360rpx;
+    height: 360rpx;
+    z-index: 1;
+}
+.move-box.active {
+    z-index: 9999;
+}
+.video-comp {
+    width: 100%;
+    height: 100%;
 }

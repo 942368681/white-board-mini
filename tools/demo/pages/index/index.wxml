@@ -3,6 +3,7 @@
         <view class="input-type" bindtap="changeInpsType">
             <icon class="iconfont iconpan_icon {{ inputType === 'pencil' ? 'active' : '' }}" data-type="pencil"></icon>
             <icon class="iconfont iconcachu {{ inputType === 'rubber' ? 'active' : '' }}" data-type="rubber"></icon>
+            <switch checked="{{ switchChecked }}" bindchange="switchChange"/>
         </view>
         <scroll-view scroll-x="true" scroll-left="0" class='color-list'>
             <view 
