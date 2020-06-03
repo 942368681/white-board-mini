@@ -36,7 +36,7 @@ Component({
         isDrawing: false,
         // 当前最顶层画布节点实例
         activeCanvasNode: null,
-        // 当前最顶层画布轨迹数据
+        // 多层数据（传入的 zIndexInfo）
         points: [],
         // 当前次绘图轨迹数据
         curve: null,
