@@ -1,7 +1,7 @@
 {
   "name": "white-board-mini",
-  "version": "1.1.3",
-  "description": "",
+  "version": "1.1.5",
+  "description": "小程序画板组件",
   "main": "miniprogram_dist/index.js",
   "scripts": {
     "dev": "gulp dev --develop",
@@ -31,9 +31,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wechat-miniprogram/miniprogram-custom-component.git"
+    "url": "https://github.com/942368681/white-board-mini.git"
   },
-  "author": "wechat-miniprogram",
+  "bugs": {
+    "url": "https://github.com/942368681/white-board-mini/issues"
+  },
+  "homepage": "https://github.com/942368681/white-board-mini#readme",
+  "author": "sfl",
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.26.3",
