@@ -23,14 +23,11 @@ function touchstart(event, ins) {
 
 function touchmove(event, ins) {
     if (!event.currentTarget.dataset.isrubber) return;
-    // console.log(event.currentTarget.dataset.rect.width)
 
     var touch = event.touches[0] || event.changedTouches[0];
     var parentNodeOffset = event.currentTarget;
     var moveToX;
     var moveToY;
-    // var moveToX = (touch.pageX - parentNodeOffset.offsetLeft) <= 0 ? 0 : touch.pageX - parentNodeOffset.offsetLeft;
-    // var moveToY = (touch.pageY - parentNodeOffset.offsetTop) <= 0 ? 0 : touch.pageY - parentNodeOffset.offsetTop;
     if (touch.pageX - parentNodeOffset.offsetLeft <= 0) {
         moveToX = 0;
     } else if (touch.pageX - parentNodeOffset.offsetLeft >= Number(event.currentTarget.dataset.rect.width)) {

@@ -42,12 +42,16 @@ Component({
         // 上一个点的压感值
         prevPressure: null,
         // 起始点
-        beginPoint: null
+        beginPoint: null,
+        // 橡皮偏移量
+        rubberRange: 0
     },
     ready: function () {
         const {
-            zIndexInfo
+            zIndexInfo,
+            rubberRange
         } = this.properties.initData;
+        this.setBaseInfo({rubberRange});
         this.setContainerIns();
         this.setDpr();
         this.setMaxIndex(zIndexInfo);
@@ -59,7 +63,17 @@ Component({
      */
     methods: {
         /**
-         * 
+         * 设置基础设置信息
+         * @param {rubberRange} params 
+         */
+        setBaseInfo: function (params) {
+            const {
+                rubberRange
+            } = params;
+            this.data.rubberRange = rubberRange;
+        },
+        /**
+         * 初始化白板
          * @param {*} zIndexInfo  此时是按层级由低到高( 1， 2， 3 ...)序列化好的zIndexInfo
          * @param {*} index 索引
          */
@@ -89,7 +103,10 @@ Component({
                     node.height = height * dpr;
                     this.data['context' + zIndex] = node.getContext('2d');
                     this.data['context' + zIndex].scale(dpr, dpr);
-    
+                    zIndexInfo[index].containerRect = {
+                        width,
+                        height
+                    };
                     this.dataEcho(canvasSettings, zIndexInfo[index], zIndex, false);
                     if (index === zIndexInfo.length - 1) { // 当前最顶层(操作层)
                         this.data.activeCanvasNode = node;
@@ -262,9 +279,7 @@ Component({
                 rubberActive,
                 multiBoardData,
                 curve,
-                canvasSettings: {
-                    rubberRange
-                }
+                rubberRange
             } = this.data;
 
             if (rubberActive) return;
@@ -273,7 +288,7 @@ Component({
             this.data.curve.rectArea = this.getRectArea(curve.path, rubberRange);
             multiBoardData[multiBoardData.length - 1].content.push(curve);
             this.data.curve = null;
-            // console.log(JSON.stringify(multiBoardData));
+            console.log(JSON.stringify(multiBoardData));
             // console.log(JSON.stringify(multiBoardData[multiBoardData.length - 1]));
         },
         getRectArea: function (pathArr, rubberRange) {
@@ -353,7 +368,6 @@ Component({
         // 设置容器实例
         setContainerIns: function () {
             wx.createSelectorQuery().in(this).select('#board-box').boundingClientRect(rect => {
-                // this.data.containerIns = rect;
                 this.setData({
                     containerIns: rect
                 });
@@ -378,31 +392,24 @@ Component({
             let color, width;
             const {
                 canvasSettings: {
-                    inputType
-                },
-                canvasSettings: {
-                    strokeStyle
-                },
-                canvasSettings: {
+                    inputType, 
+                    strokeStyle, 
                     lineWidth
-                },
-                canvasSettings: {
-                    rubberRange
                 },
                 zIndexMax
             } = this.data;
             const ctx = zIndex ? this.data['context' + zIndex] : this.data['context' + zIndexMax];
 
-            if (inputType === 'pencil') {
+            if (inputType === 'rubber') {
+                this.setData({
+                    rubberActive: true
+                });
+            } else {
                 this.setData({
                     rubberActive: false
                 });
                 color = strokeStyle;
                 width = lineWidth;
-            } else if (inputType === 'rubber') {
-                this.setData({
-                    rubberActive: true
-                });
             }
             ctx.lineCap = 'round'; //设置线条端点的样式
             ctx.lineJoin = 'round'; //设置两线相交处的样式
@@ -488,6 +495,10 @@ Component({
             this.setData({
                 handleComps
             });
+        },
+        // 返回白板数据
+        getBoardData: function () {
+            return this.data.multiBoardData;
         }
     }
 })

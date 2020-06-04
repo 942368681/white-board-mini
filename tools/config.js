@@ -58,7 +58,7 @@ module.exports = {
       new webpack.optimize.LimitChunkCountPlugin({maxChunks: 1}),
     ],
     optimization: {
-      minimize: false,
+      minimize: isDev ? false : true,
     },
     // devtool: 'nosources-source-map', // 生成 js sourcemap
     performance: {
