@@ -1,3 +1,5 @@
+import utils from './utils';
+
 Component({
     /**
      * 组件的属性列表
@@ -46,22 +48,55 @@ Component({
         // 橡皮偏移量
         rubberRange: 0
     },
-    ready: function () {
-        const {
-            zIndexInfo,
-            rubberRange
-        } = this.properties.initData;
-        this.setBaseInfo({rubberRange});
-        this.setContainerIns();
-        this.setDpr();
-        this.setMaxIndex(zIndexInfo);
-        this.setBoardData(zIndexInfo);
-        this.initBoard(zIndexInfo, 0);
+    // ready: function () {
+    //     this.init();
+    // },
+    /**
+     * 监听数据来源变化
+     */
+    observers: {
+        'initData': function(initData) {
+            utils.debounce(() => {
+                this.data.multiBoardData.forEach(e => {
+                    this.data['context' + e.zIndex] = null;
+                });
+                this.setData({
+                    domShow: {
+                        canvas1: false,
+                        canvas2: false,
+                        canvas3: false
+                    }
+                }, () => {
+                    this.init();
+                });
+            }, 100)();
+        }
     },
     /**
      * 组件的方法列表
      */
     methods: {
+
+        /**
+         * 初始化
+         */
+        init: function () {
+            const initData = this.properties.initData;
+            if (!initData || !initData.canvasSettings || !initData.zIndexInfo || !initData.rubberRange) {
+                return;
+            }
+            const {
+                canvasSettings,
+                zIndexInfo,
+                rubberRange
+            } = initData;
+            this.setBaseInfo({rubberRange});
+            this.setContainerIns();
+            this.setDpr();
+            this.setMaxIndex(zIndexInfo);
+            this.setBoardData(zIndexInfo);
+            this.initBoard(canvasSettings, zIndexInfo, 0);
+        },
         /**
          * 设置基础设置信息
          * @param {rubberRange} params 
@@ -77,7 +112,7 @@ Component({
          * @param {*} zIndexInfo  此时是按层级由低到高( 1， 2， 3 ...)序列化好的zIndexInfo
          * @param {*} index 索引
          */
-        initBoard: function (zIndexInfo, index) {
+        initBoard: function (canvasSettings, zIndexInfo, index) {
             const attr = 'domShow.canvas' + (index + 1);
             this.setData({
                 [attr]: true
@@ -89,9 +124,6 @@ Component({
                     const {
                         dpr
                     } = this.data;
-                    const {
-                        canvasSettings,
-                    } = this.properties.initData;
                     const {
                         node,
                         width,
@@ -112,7 +144,7 @@ Component({
                         this.data.activeCanvasNode = node;
                         node.requestAnimationFrame(this.drawing.bind(this));
                     } else {
-                        this.initBoard(zIndexInfo, (index + 1));
+                        this.initBoard(canvasSettings, zIndexInfo, (index + 1));
                     }
                 });
             });
@@ -288,7 +320,7 @@ Component({
             this.data.curve.rectArea = this.getRectArea(curve.path, rubberRange);
             multiBoardData[multiBoardData.length - 1].content.push(curve);
             this.data.curve = null;
-            console.log(JSON.stringify(multiBoardData));
+            // console.log(JSON.stringify(multiBoardData));
             // console.log(JSON.stringify(multiBoardData[multiBoardData.length - 1]));
         },
         getRectArea: function (pathArr, rubberRange) {
@@ -297,14 +329,14 @@ Component({
             } = this.data;
             const disX = rubberRange / containerIns.width;
             const disY = rubberRange / containerIns.height;
-            const init = {xMin: Infinity, xMax: -Infinity, yMin: Infinity, yMax: -Infinity};
+            const initObj = {xMin: Infinity, xMax: -Infinity, yMin: Infinity, yMax: -Infinity};
             const obj = pathArr.reduce(function (prev, cur) {
                 prev.xMin = Math.min.apply(null, [prev.xMin, cur.x]);
                 prev.xMax = Math.max.apply(null, [prev.xMax, cur.x]);
                 prev.yMin = Math.min.apply(null, [prev.yMin, cur.y]);
                 prev.yMax = Math.max.apply(null, [prev.yMax, cur.y]);
                 return prev;
-            }, init);
+            }, initObj);
             return [
                 obj.xMin - disX <= 0 ? 0 : obj.xMin - disX,
                 obj.xMax + disX >= containerIns.width ? containerIns.width : obj.xMax + disX,

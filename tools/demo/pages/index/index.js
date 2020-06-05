@@ -1,4 +1,5 @@
 const boardData = require('../../mock/boardData');
+const boardData2 = require('../../mock/boardData2');
 
 Page({
     data: {
@@ -108,4 +109,29 @@ Page({
         const data = compInstance.getBoardData();
         console.log(data);
     },
+    // 重置数据
+    reload: function () {
+        const {
+            inputType,
+            colorList,
+            currColorIndex,
+            lineWidth,
+            rubberRange
+        } = this.data;
+
+        const settings = {
+            inputType,
+            lineWidth,
+            strokeStyle: colorList[currColorIndex]
+        };
+        const initData = {
+            canvasSettings: settings,
+            zIndexInfo: boardData2,
+            rubberRange
+        };
+        
+        this.setData({
+            boardData: initData
+        });
+    }
 })

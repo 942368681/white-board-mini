@@ -4,7 +4,8 @@
             <icon class="iconfont iconpan_icon {{ inputType === 'fountain-pen' ? 'active' : '' }}" data-type="fountain-pen"></icon>
             <icon class="iconfont iconcachu {{ inputType === 'rubber' ? 'active' : '' }}" data-type="rubber"></icon>
             <!-- <switch checked="{{ switchChecked }}" bindchange="switchChange"/> -->
-            <button type="primary" class="save-btn" bindtap="getData">保存</button>
+            <button type="primary" class="save-btn" bindtap="getData">save</button>
+            <button type="primary" class="reload-btn" bindtap="reload">reload</button>
         </view>
         <scroll-view scroll-x="true" scroll-left="0" class='color-list'>
             <view 

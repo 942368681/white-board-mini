@@ -21,7 +21,7 @@
     border-radius: 10rpx;
     margin-right: 20rpx;
 }
-.input-type .save-btn {
+.input-type .save-btn, .input-type .reload-btn {
     display: flex;
     height: 60rpx;
     align-items: center;
@@ -29,7 +29,7 @@
     width: 100rpx;
     font-size: 28rpx;
     border-radius: 10rpx;
-    margin: 0;
+    margin: 0 20rpx 0 0;
     padding: 0;
 }
 .input-type icon.active {
