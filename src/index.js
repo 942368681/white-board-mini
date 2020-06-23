@@ -16,6 +16,8 @@ Component({
     data: {
         // 容器实例
         containerIns: null,
+        // 防抖定时器
+        timer: null,
         dpr: '',
         // dom
         domShow: {
@@ -56,7 +58,7 @@ Component({
      */
     observers: {
         'initData': function(initData) {
-            utils.debounce(() => {
+            this.debounce(() => {
                 this.data.multiBoardData.forEach(e => {
                     this.data['context' + e.zIndex] = null;
                 });
@@ -69,20 +71,46 @@ Component({
                 }, () => {
                     this.init();
                 });
-            }, 100)();
+            }, 300)();
         }
     },
     /**
      * 组件的方法列表
      */
     methods: {
-
+        /**
+         * 防抖函数
+         * @param fn 事件触发的操作
+         * @param delay 多少毫秒内连续触发事件，不会执行
+         * @returns {Function}
+         */
+        debounce: function (fn, delay) {
+            return () => {
+                this.data.timer && clearTimeout(this.data.timer);
+                this.data.timer = setTimeout(() => {
+                    fn();
+                }, delay);
+            }
+        },
+        /**
+         * 校验初始化参数
+         */
+        checkInitParams: function (initData) {
+            let bool;
+            if (!initData || !initData.canvasSettings || !initData.zIndexInfo || !initData.rubberRange) {
+                bool = false;
+            } else {
+                bool = true;
+            }
+            return bool;
+        },
         /**
          * 初始化
          */
         init: function () {
             const initData = this.properties.initData;
-            if (!initData || !initData.canvasSettings || !initData.zIndexInfo || !initData.rubberRange) {
+            const valid = this.checkInitParams(initData);
+            if (!valid) {
                 return;
             }
             const {
@@ -117,7 +145,7 @@ Component({
             this.setData({
                 [attr]: true
             }, () => {
-                wx.createSelectorQuery().in(this).select('#board-index-' + (index + 1)).fields({
+                wx.createSelectorQuery().in(this).select(`#board-index-${index + 1}`).fields({
                     node: true,
                     size: true
                 }).exec(res => {
