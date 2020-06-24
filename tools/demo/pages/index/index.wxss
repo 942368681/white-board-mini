@@ -65,8 +65,8 @@
 }
 .board {
     margin: auto;
-    width: 80%;
-    height: 900rpx;
+    /* width: 80%;
+    height: 900rpx; */
     border: 1px solid #333;
     position: relative;
 }

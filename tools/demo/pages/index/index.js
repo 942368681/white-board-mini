@@ -3,6 +3,12 @@ const boardData2 = require('../../mock/boardData2');
 
 Page({
     data: {
+        viewRect: {
+            width: '80%',
+            height: '900rpx'
+            // width: '66%',
+            // height: '1200rpx'
+        },
         boardData: {},
         // 输入类型 fountain-pen： 钢笔， rubber： 橡皮
         inputType: 'fountain-pen',
@@ -62,8 +68,13 @@ Page({
         this.setData({
             inputType
         }, () => {
-            const compInstance = this.selectComponent('.board-comp');
-            this.setUpBoard(compInstance, {
+            // const compInstance = this.selectComponent('.board-comp');
+            const compInstance1 = this.selectComponent('.board-comp-1');
+            const compInstance2 = this.selectComponent('.board-comp-2');
+            this.setUpBoard(compInstance1, {
+                inputType
+            });
+            this.setUpBoard(compInstance2, {
                 inputType
             });
         });
@@ -80,8 +91,13 @@ Page({
         this.setData({
             currColorIndex: index
         }, () => {
-            const compInstance = this.selectComponent('.board-comp');
-            this.setUpBoard(compInstance, {
+            // const compInstance = this.selectComponent('.board-comp');
+            const compInstance1 = this.selectComponent('.board-comp-1');
+            const compInstance2 = this.selectComponent('.board-comp-2');
+            this.setUpBoard(compInstance1, {
+                strokeStyle: colorList[index]
+            });
+            this.setUpBoard(compInstance2, {
                 strokeStyle: colorList[index]
             });
         });
@@ -91,8 +107,13 @@ Page({
         this.setData({
             lineWidth: value
         }, () => {
-            const compInstance = this.selectComponent('.board-comp');
-            this.setUpBoard(compInstance, {
+            // const compInstance = this.selectComponent('.board-comp');
+            const compInstance1 = this.selectComponent('.board-comp-1');
+            const compInstance2 = this.selectComponent('.board-comp-2');
+            this.setUpBoard(compInstance1, {
+                lineWidth: value
+            });
+            this.setUpBoard(compInstance2, {
                 lineWidth: value
             });
         });
@@ -105,9 +126,12 @@ Page({
     },
     // 获取白板数据
     getData: function () {
-        const compInstance = this.selectComponent('.board-comp');
-        const data = compInstance.getBoardData();
-        console.log(data);
+        // const compInstance = this.selectComponent('.board-comp');
+        const compInstance1 = this.selectComponent('.board-comp-1');
+        const compInstance2 = this.selectComponent('.board-comp-2');
+        const data1 = compInstance1.getBoardData();
+        const data2 = compInstance2.getBoardData();
+        console.log(data1, data2);
     },
     // 重置数据
     reload: function () {
@@ -132,6 +156,34 @@ Page({
         
         this.setData({
             boardData: initData
+        });
+    },
+    // 改变高度
+    change: function () {
+        const {
+            inputType,
+            colorList,
+            currColorIndex,
+            lineWidth,
+            rubberRange
+        } = this.data;
+
+        const settings = {
+            inputType,
+            lineWidth,
+            strokeStyle: colorList[currColorIndex]
+        };
+        const initData = {
+            canvasSettings: settings,
+            zIndexInfo: boardData2,
+            rubberRange
+        };
+        this.setData({
+            boardData: initData,
+            viewRect: {
+                width: '66%',
+                height: '1200rpx'
+            }
         });
     }
 })

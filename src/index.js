@@ -69,6 +69,7 @@ Component({
                         canvas3: false
                     }
                 }, () => {
+                    console.log('初始化！！！！！！！！！！！！')
                     this.init();
                 });
             }, 300)();
@@ -428,6 +429,7 @@ Component({
         // 设置容器实例
         setContainerIns: function () {
             wx.createSelectorQuery().in(this).select('#board-box').boundingClientRect(rect => {
+                console.log('设置容器实例', JSON.stringify(rect))
                 this.setData({
                     containerIns: rect
                 });
