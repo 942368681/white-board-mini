@@ -23,6 +23,8 @@
         </view>
     </view>
     <view class="board">
-        <board init-data="{{ boardData }}" class="board-comp" />
+        <view class="board-con">
+            <board init-data="{{ boardData }}" class="board-comp" />
+        </view>
     </view>
 </view>
