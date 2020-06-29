@@ -3,6 +3,7 @@
     id='board-box' 
     data-isRubber="{{ rubberActive }}"
     data-rect="{{ containerIns }}"
+    data-containerScrollTop="{{ containerScrollTop }}"
     bindtouchstart="{{ rubber.touchstart }}" 
     bindtouchmove="{{ rubber.touchmove }}" 
     bindtouchend="{{ rubber.touchend }}"

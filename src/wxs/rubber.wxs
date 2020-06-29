@@ -13,9 +13,11 @@ function touchstart(event, ins) {
 
     var touch = event.touches[0] || event.changedTouches[0];
     var parentNodeOffset = event.currentTarget;
+    var touchX = touch.pageX;
+    var touchY = touch.pageY + Number(parentNodeOffset.dataset.containerscrolltop);
     // console.log(JSON.stringify(parentNodeOffset), JSON.stringify(touch), touch.pageX, touch.pageY);
-    initStartX = touch.pageX - parentNodeOffset.dataset.rect.left;
-    initStartY = touch.pageY - parentNodeOffset.dataset.rect.top;
+    initStartX = touchX - parentNodeOffset.dataset.rect.left;
+    initStartY = touchY - parentNodeOffset.dataset.rect.top;
     ins.selectComponent('.rubber-box').setStyle({
         left: initStartX + 'px',
         top: initStartY + 'px'
@@ -27,21 +29,23 @@ function touchmove(event, ins) {
 
     var touch = event.touches[0] || event.changedTouches[0];
     var parentNodeOffset = event.currentTarget;
+    var touchX = touch.pageX;
+    var touchY = touch.pageY + Number(parentNodeOffset.dataset.containerscrolltop); 
     var moveToX;
     var moveToY;
-    if (touch.pageX - parentNodeOffset.dataset.rect.left <= 0) {
+    if (touchX - parentNodeOffset.dataset.rect.left <= 0) {
         moveToX = 0;
-    } else if (touch.pageX - parentNodeOffset.dataset.rect.left >= Number(event.currentTarget.dataset.rect.width)) {
+    } else if (touchX - parentNodeOffset.dataset.rect.left >= Number(event.currentTarget.dataset.rect.width)) {
         moveToX = Number(event.currentTarget.dataset.rect.width);
     } else {
-        moveToX = touch.pageX - parentNodeOffset.dataset.rect.left;
+        moveToX = touchX - parentNodeOffset.dataset.rect.left;
     }
-    if (touch.pageY - parentNodeOffset.dataset.rect.top <= 0) {
+    if (touchY - parentNodeOffset.dataset.rect.top <= 0) {
         moveToY = 0;
-    } else if (touch.pageY - parentNodeOffset.dataset.rect.top >= Number(event.currentTarget.dataset.rect.height)) {
+    } else if (touchY - parentNodeOffset.dataset.rect.top >= Number(event.currentTarget.dataset.rect.height)) {
         moveToY = Number(event.currentTarget.dataset.rect.height);
     } else {
-        moveToY = touch.pageY - parentNodeOffset.dataset.rect.top;
+        moveToY = touchY - parentNodeOffset.dataset.rect.top;
     }
     var startX = Math.min(moveToX, initStartX);
     var startY = Math.min(moveToY, initStartY);

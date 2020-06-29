@@ -8,6 +8,10 @@ Component({
         initData: {
             type: Object,
             value: {}
+        },
+        containerScrollTop: {
+            type: Number,
+            value: 0
         }
     },
     /**

@@ -1,3 +1,4 @@
+<!-- <scroll-view class="container" scroll-y="true" bindscroll="viewScroll"> -->
 <view class="container">
     <view class="tool-bar">
         <view class="input-type" bindtap="changeInpsType">
@@ -25,12 +26,13 @@
     </view>
     <view class="board" style="width:{{viewRect.width}}; height:{{viewRect.height}};">
         <view class="board-con">
-            <board init-data="{{ boardData }}" class="board-comp-1" />
+            <board init-data="{{ boardData }}" container-scroll-top="{{ scrollTop }}" class="board-comp-1" />
         </view>
     </view>
     <view class="board" style="width:{{viewRect.width}}; height:{{viewRect.height}};">
         <view class="board-con">
-            <board init-data="{{ boardData }}" class="board-comp-2" />
+            <board init-data="{{ boardData }}" container-scroll-top="{{ scrollTop }}" class="board-comp-2" />
         </view>
     </view>
 </view>
+<!-- </scroll-view> -->

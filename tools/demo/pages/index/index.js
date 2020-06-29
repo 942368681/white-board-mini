@@ -3,6 +3,7 @@ const boardData2 = require('../../mock/boardData2');
 
 Page({
     data: {
+        scrollTop: 0,
         viewRect: {
             width: '80%',
             height: '900rpx'
@@ -187,6 +188,11 @@ Page({
                 width: '66%',
                 height: '1200rpx'
             }
+        });
+    },
+    viewScroll: function(event) {
+        this.setData({
+            scrollTop: event.detail.scrollTop
         });
     }
 })
