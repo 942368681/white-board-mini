@@ -45,7 +45,8 @@ Page({
         const settings = {
             inputType,
             lineWidth,
-            strokeStyle: colorList[currColorIndex]
+            strokeStyle: colorList[currColorIndex],
+            lineCap: 'round'
         };
         const initData = {
             canvasSettings: settings,
@@ -146,7 +147,8 @@ Page({
         const settings = {
             inputType,
             lineWidth,
-            strokeStyle: colorList[currColorIndex]
+            strokeStyle: colorList[currColorIndex],
+            lineCap: 'round'
         };
         const initData = {
             canvasSettings: settings,
@@ -171,7 +173,8 @@ Page({
         const settings = {
             inputType,
             lineWidth,
-            strokeStyle: colorList[currColorIndex]
+            strokeStyle: colorList[currColorIndex],
+            lineCap: 'round'
         };
         const initData = {
             canvasSettings: settings,

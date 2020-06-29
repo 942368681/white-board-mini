@@ -69,7 +69,6 @@ Component({
                         canvas3: false
                     }
                 }, () => {
-                    console.log('初始化！！！！！！！！！！！！')
                     this.init();
                 });
             }, 300)();
@@ -429,7 +428,6 @@ Component({
         // 设置容器实例
         setContainerIns: function () {
             wx.createSelectorQuery().in(this).select('#board-box').boundingClientRect(rect => {
-                console.log('设置容器实例', JSON.stringify(rect))
                 this.setData({
                     containerIns: rect
                 });
@@ -451,12 +449,14 @@ Component({
         setSettings: function (settings, zIndex) {
             this.data.canvasSettings = {...this.data.canvasSettings, ...settings};
             
-            let color, width;
+            let color, width, cap, join;
             const {
                 canvasSettings: {
                     inputType, 
                     strokeStyle, 
-                    lineWidth
+                    lineWidth,
+                    lineCap,
+                    lineJoin
                 },
                 zIndexMax
             } = this.data;
@@ -472,9 +472,11 @@ Component({
                 });
                 color = strokeStyle;
                 width = lineWidth;
+                cap = lineCap || 'round';
+                join = lineJoin || 'round';
             }
-            ctx.lineCap = 'round'; //设置线条端点的样式
-            ctx.lineJoin = 'round'; //设置两线相交处的样式
+            ctx.lineCap = cap; //设置线条端点的样式
+            ctx.lineJoin = join; //设置两线相交处的样式
             ctx.strokeStyle = color; //设置描边颜色
             ctx.lineWidth = width; //设置线条宽度
         },
