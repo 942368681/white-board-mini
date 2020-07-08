@@ -3,6 +3,7 @@ const boardData2 = require('../../mock/boardData2');
 
 Page({
     data: {
+        disableBoard: false,
         scrollTop: 0,
         viewRect: {
             width: '80%',
@@ -194,5 +195,10 @@ Page({
         this.setData({
             scrollTop: event.detail.scrollTop
         });
-    }
+    },
+    disableBoardChange: function (ev) {
+        this.setData({
+            disableBoard: ev.detail.value
+        });
+    },
 })

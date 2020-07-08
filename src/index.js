@@ -12,6 +12,10 @@ Component({
         containerScrollTop: {
             type: Number,
             value: 0
+        },
+        disable: {
+            type: Boolean,
+            value: false
         }
     },
     /**
