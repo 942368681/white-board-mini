@@ -1,9 +1,16 @@
 .container {
     /* height: 100vh; */
+    position: relative;
+    padding-top: 500rpx;
 }
 .tool-bar {
     width: 80%;
     margin: 0 auto 40rpx;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    background: #fff;
 }
 .input-type {
     display: flex;
