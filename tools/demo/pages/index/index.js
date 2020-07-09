@@ -196,9 +196,18 @@ Page({
             scrollTop: event.detail.scrollTop
         });
     },
+    // disableBoardChange: function (ev) {
+    //     this.setData({
+    //         disableBoard: ev.detail.value
+    //     });
+    // },
     disableBoardChange: function (ev) {
         this.setData({
             disableBoard: ev.detail.value
         });
+        const compInstance1 = this.selectComponent('.board-comp-1');
+        const compInstance2 = this.selectComponent('.board-comp-2');
+        compInstance1.disable(ev.detail.value);
+        compInstance2.disable(ev.detail.value);
     },
 })

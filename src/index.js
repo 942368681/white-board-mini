@@ -22,6 +22,7 @@ Component({
      * 组件的初始数据
      */
     data: {
+        tempFilePath: '',
         // 容器实例
         containerIns: null,
         // 防抖定时器
@@ -66,11 +67,15 @@ Component({
      */
     observers: {
         'initData': function(initData) {
+            // if (this.data.tempFilePath) {
+            //     return;
+            // }
             this.debounce(() => {
                 this.data.multiBoardData.forEach(e => {
                     this.data['context' + e.zIndex] = null;
                 });
                 this.setData({
+                    tempFilePath: '',
                     domShow: {
                         canvas1: false,
                         canvas2: false,
@@ -571,6 +576,43 @@ Component({
         // 返回白板数据
         getBoardData: function () {
             return this.data.multiBoardData;
+        },
+        disable: function (bool) {
+            if (bool) {
+                const _self = this;
+                const { containerIns, dpr, activeCanvasNode } = this.data;
+                wx.canvasToTempFilePath({
+                    x: 0,
+                    y: 0,
+                    width: containerIns.width,
+                    height: containerIns.height,
+                    destWidth: containerIns.width*dpr,
+                    destHeight: containerIns.height*dpr,
+                    canvas: activeCanvasNode,
+                    quality: 1,
+                    success(res) {
+                        console.log(res)
+                        console.log(res.tempFilePath)
+                        _self.setData({
+                            tempFilePath: res.tempFilePath
+                        });
+                    }
+                });
+            } else {
+                this.data.multiBoardData.forEach(e => {
+                    this.data['context' + e.zIndex] = null;
+                });
+                this.setData({
+                    tempFilePath: '',
+                    domShow: {
+                        canvas1: false,
+                        canvas2: false,
+                        canvas3: false
+                    }
+                }, () => {
+                    this.init();
+                });
+            }
         }
     }
 })
