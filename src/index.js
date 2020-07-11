@@ -12,17 +12,12 @@ Component({
         containerScrollTop: {
             type: Number,
             value: 0
-        },
-        disable: {
-            type: Boolean,
-            value: false
         }
     },
     /**
      * 组件的初始数据
      */
     data: {
-        tempFilePath: '',
         // 容器实例
         containerIns: null,
         // 防抖定时器
@@ -67,15 +62,11 @@ Component({
      */
     observers: {
         'initData': function(initData) {
-            // if (this.data.tempFilePath) {
-            //     return;
-            // }
             this.debounce(() => {
                 this.data.multiBoardData.forEach(e => {
                     this.data['context' + e.zIndex] = null;
                 });
                 this.setData({
-                    tempFilePath: '',
                     domShow: {
                         canvas1: false,
                         canvas2: false,
@@ -163,7 +154,8 @@ Component({
                     size: true
                 }).exec(res => {
                     const {
-                        dpr
+                        dpr,
+                        rubberRange
                     } = this.data;
                     const {
                         node,
@@ -171,16 +163,19 @@ Component({
                         height
                     } = res[0];
                     const zIndex = zIndexInfo[index].zIndex;
-    
+                    const baseContainerRect = zIndexInfo[index].containerRect;
+                    for (let i = 0; i < zIndexInfo[index].content.length; i++) {
+                        zIndexInfo[index].content[i].rectArea = this.getRectArea(zIndexInfo[index].content[i]);
+                    }
                     node.width = width * dpr;
                     node.height = height * dpr;
                     this.data['context' + zIndex] = node.getContext('2d');
                     this.data['context' + zIndex].scale(dpr, dpr);
                     zIndexInfo[index].containerRect = {
-                        width,
-                        height
+                        width: Number(width.toFixed(0)),
+                        height: Number(height.toFixed(0))
                     };
-                    this.dataEcho(canvasSettings, zIndexInfo[index], zIndex, false);
+                    this.dataEcho(canvasSettings, zIndexInfo[index], zIndex, false, baseContainerRect);
                     if (index === zIndexInfo.length - 1) { // 当前最顶层(操作层)
                         this.data.activeCanvasNode = node;
                         node.requestAnimationFrame(this.drawing.bind(this));
@@ -193,8 +188,8 @@ Component({
         getCoords: function (e) {
             let pos = e.touches[0];
             return {
-                x: pos.x,
-                y: pos.y,
+                x: Number((pos.x).toFixed(0)),
+                y: Number((pos.y).toFixed(0)),
                 pressure: 1
             }
         },
@@ -215,10 +210,10 @@ Component({
                 const con = content[i];
                 if (!con) break;
 
-                const xMin = (con.rectArea[0] * containerIns.width).toFixed(0);
-                const xMax = (con.rectArea[1] * containerIns.width).toFixed(0);
-                const yMin = (con.rectArea[2] * containerIns.height).toFixed(0);
-                const yMax = (con.rectArea[3] * containerIns.height).toFixed(0);
+                const xMin = con.rectArea[0];
+                const xMax = con.rectArea[1];
+                const yMin = con.rectArea[2];
+                const yMax = con.rectArea[3];
 
                 const rect2 = {
                     startX: xMin,
@@ -252,12 +247,12 @@ Component({
                 rect.startY,
                 rect.startY + rect.height
             ];
-            const pathArr = oContent.path;
-            for (let i = 0, len = pathArr.length; i < len; i++) {
-                const oPoint = pathArr[i];
+            const xArr = oContent.x;
+            const yArr = oContent.y;
+            for (let i = 0, len = xArr.length; i < len; i++) {
                 const coords = {
-                    x: oPoint.x * containerIns.width,
-                    y: oPoint.y * containerIns.height
+                    x: xArr[i],
+                    y: yArr[i]
                 };
                 if (this.isFitPath(coords, rectArea)) {
                     return true;
@@ -326,9 +321,11 @@ Component({
 
             this.data.coords = this.getCoords(e);
             this.data.curve = {
-                canvasSettings,
-                path: [],
-                rectArea: []
+                p: [],
+                x: [],
+                y: [],
+                rectArea: [],
+                canvasSettings
             };
 
             this.data.isDrawing = true;
@@ -352,37 +349,34 @@ Component({
                 rubberActive,
                 multiBoardData,
                 curve,
-                rubberRange
             } = this.data;
 
             if (rubberActive) return;
 
             this.data.isDrawing = false;
-            this.data.curve.rectArea = this.getRectArea(curve.path, rubberRange);
+            this.data.curve.rectArea = this.getRectArea(curve);
             multiBoardData[multiBoardData.length - 1].content.push(curve);
             this.data.curve = null;
+
             // console.log(JSON.stringify(multiBoardData));
             // console.log(JSON.stringify(multiBoardData[multiBoardData.length - 1]));
         },
-        getRectArea: function (pathArr, rubberRange) {
+        getRectArea: function (pathInfo) {
             const {
+                rubberRange,
                 containerIns
             } = this.data;
-            const disX = rubberRange / containerIns.width;
-            const disY = rubberRange / containerIns.height;
-            const initObj = {xMin: Infinity, xMax: -Infinity, yMin: Infinity, yMax: -Infinity};
-            const obj = pathArr.reduce(function (prev, cur) {
-                prev.xMin = Math.min.apply(null, [prev.xMin, cur.x]);
-                prev.xMax = Math.max.apply(null, [prev.xMax, cur.x]);
-                prev.yMin = Math.min.apply(null, [prev.yMin, cur.y]);
-                prev.yMax = Math.max.apply(null, [prev.yMax, cur.y]);
-                return prev;
-            }, initObj);
+            const obj = {
+                xMin: Math.min.apply(null, pathInfo.x),
+                xMax: Math.max.apply(null, pathInfo.x),
+                yMin: Math.min.apply(null, pathInfo.y),
+                yMax: Math.max.apply(null, pathInfo.y)
+            };
             return [
-                obj.xMin - disX <= 0 ? 0 : obj.xMin - disX,
-                obj.xMax + disX >= containerIns.width ? containerIns.width : obj.xMax + disX,
-                obj.yMin - disY <= 0 ? 0 : obj.yMin - disY,
-                obj.yMax + disY >= containerIns.height ? containerIns.height : obj.yMax + disY
+                obj.xMin - rubberRange <= 0 ? 0 : obj.xMin - rubberRange,
+                obj.xMax + rubberRange >= containerIns.width ? containerIns.width : obj.xMax + rubberRange,
+                obj.yMin - rubberRange <= 0 ? 0 : obj.yMin - rubberRange,
+                obj.yMax + rubberRange >= containerIns.height ? containerIns.height : obj.yMax + rubberRange
             ];
         },
         drawing: function () {
@@ -395,32 +389,31 @@ Component({
                 let {
                     coords,
                     zIndexMax,
-                    prevPressure,
-                    containerIns
+                    prevPressure
                 } = this.data;
 
                 const ctx = this.data['context' + zIndexMax];
 
-                this.data.curve.path.push({
-                    x: coords.x / containerIns.width,
-                    y: coords.y / containerIns.height,
-                    pressure: coords.pressure
-                });
+                const oP = Number((coords.pressure*4096).toFixed(0));
+                this.data.curve.x.push(coords.x);
+                this.data.curve.y.push(coords.y);
+                this.data.curve.p.push(oP);
 
-                if (this.data.curve.path.length > 3) {
-                    const lastTwoPoints = this.data.curve.path.slice(-2);
+                if (this.data.curve.x.length > 3) {
+                    const lastTwoPointsX = this.data.curve.x.slice(-2);
+                    const lastTwoPointsY = this.data.curve.y.slice(-2);
                     const controlPoint = {
-                        x: lastTwoPoints[0].x * containerIns.width,
-                        y: lastTwoPoints[0].y * containerIns.height
+                        x: lastTwoPointsX[0],
+                        y: lastTwoPointsY[0]
                     }
                     const endPoint = {
-                        x: (lastTwoPoints[0].x * containerIns.width + lastTwoPoints[1].x * containerIns.width) / 2,
-                        y: (lastTwoPoints[0].y * containerIns.height + lastTwoPoints[1].y * containerIns.height) / 2
+                        x: (lastTwoPointsX[0] + lastTwoPointsX[1]) / 2,
+                        y: (lastTwoPointsY[0] + lastTwoPointsY[1]) / 2
                     }
 
-                    if (!prevPressure || prevPressure !== coords.pressure) {
-                        this.data.prevPressure = coords.pressure;
-                        this.setPointSize(coords.pressure);
+                    if (!prevPressure || prevPressure !== oP) {
+                        this.data.prevPressure = oP;
+                        this.setPointSize(oP);
                     }
 
                     ctx.beginPath();
@@ -431,8 +424,8 @@ Component({
                     this.data.beginPoint = endPoint;
                 } else {
                     this.data.beginPoint = {
-                        x: this.data.curve.path[0].x * containerIns.width,
-                        y: this.data.curve.path[0].y * containerIns.height
+                        x: this.data.curve.x[0],
+                        y: this.data.curve.y[0]
                     };
                 }
             }
@@ -498,7 +491,7 @@ Component({
                 zIndexMax
             } = this.data;
             const ctx = zIndex ? this.data['context' + zIndex] : this.data['context' + zIndexMax];
-            ctx.lineWidth = this.data.canvasSettings.lineWidth * pressure;
+            ctx.lineWidth = this.data.canvasSettings.lineWidth * (pressure/4096);
         },
         // 清除当前层画板内容
         clearAll: function (zIndex) {
@@ -514,44 +507,64 @@ Component({
          * @param {*} info 轨迹数据
          * @param {*} zIndex 层级
          * @param {*} needClear 是否需要清除当前层级画板
+         * @param {*} baseContainerRect 初始化基准宽高
          */
-        dataEcho: function (originalSettings, info, zIndex, needClear) {
+        dataEcho: function (originalSettings, info, zIndex, needClear, baseContainerRect) {
+            if (!baseContainerRect) {
+                baseContainerRect = info.containerRect;
+            }
             if (needClear) this.clearAll(zIndex);
             const {
-                containerIns
+                containerIns,
             } = this.data;
             const content = info.content;
+            const baseWidth = baseContainerRect.width;
+            const baseHeight = baseContainerRect.height;
             let prevPressure = null;
+
             if (content.length) {
                 const ctx = this.data['context' + zIndex];
                 for (let j = 0; j < content.length; j++) {
-                    const item = content[j];
-                    const path = item.path;
+                    const oPathInfo = content[j];
+                    const xArr = oPathInfo.x;
+                    const yArr = oPathInfo.y;
+                    const pArr = oPathInfo.p;
 
-                    if (!path.length) continue;
+                    if (baseWidth !== info.containerRect.width || baseHeight !== info.containerRect.height) {
+                        for (let index = 0; index < xArr.length; index++) {
+                            xArr[index] = Number(((xArr[index]/baseWidth) * containerIns.width).toFixed(0));
+                        }
+                        for (let index = 0; index < yArr.length; index++) {
+                            yArr[index] = Number(((yArr[index]/baseHeight) * containerIns.height).toFixed(0));
+                        }
+                        content[j].rectArea = this.getRectArea(content[j]);
+                    }
+
+                    if (!oPathInfo || !pArr.length || !xArr.length || !yArr.length) continue;
     
-                    this.setSettings(item.canvasSettings, zIndex);
+                    this.setSettings(oPathInfo.canvasSettings, zIndex);
                     this.data.beginPoint = {
-                        x: path[0].x * containerIns.width,
-                        y: path[0].y * containerIns.height
+                        x: xArr[0],
+                        y: yArr[0]
                     };
     
-                    for (let k = 0; k < path.length; k++) {
-                        if ((k + 2) > path.length) break;
+                    for (let k = 0; k < xArr.length; k++) {
+                        if ((k + 2) > xArr.length) break;
                         if (k > 1) {
-                            const lastTwoPoints = path.slice(k, k + 2);
+                            const lastTwoPointsX = xArr.slice(k, k + 2);
+                            const lastTwoPointsY = yArr.slice(k, k + 2);
                             const controlPoint = {
-                                x: lastTwoPoints[0].x * containerIns.width,
-                                y: lastTwoPoints[0].y * containerIns.height
+                                x: lastTwoPointsX[0],
+                                y: lastTwoPointsY[0]
                             }
                             const endPoint = {
-                                x: (lastTwoPoints[0].x * containerIns.width + lastTwoPoints[1].x * containerIns.width) / 2,
-                                y: (lastTwoPoints[0].y * containerIns.height + lastTwoPoints[1].y * containerIns.height) / 2
+                                x: (lastTwoPointsX[0] + lastTwoPointsX[1]) / 2,
+                                y: (lastTwoPointsY[0] + lastTwoPointsY[1]) / 2
                             }
 
-                            if (!prevPressure || prevPressure !== path[k].pressure) {
-                                prevPressure = path[k].pressure;
-                                this.setPointSize(path[k].pressure, zIndex);
+                            if (!prevPressure || prevPressure !== pArr[k]) {
+                                prevPressure = pArr[k];
+                                this.setPointSize(pArr[k], zIndex);
                             }
 
                             ctx.beginPath();
@@ -575,44 +588,13 @@ Component({
         },
         // 返回白板数据
         getBoardData: function () {
-            return this.data.multiBoardData;
-        },
-        disable: function (bool) {
-            if (bool) {
-                const _self = this;
-                const { containerIns, dpr, activeCanvasNode } = this.data;
-                wx.canvasToTempFilePath({
-                    x: 0,
-                    y: 0,
-                    width: containerIns.width,
-                    height: containerIns.height,
-                    destWidth: containerIns.width*dpr,
-                    destHeight: containerIns.height*dpr,
-                    canvas: activeCanvasNode,
-                    quality: 1,
-                    success(res) {
-                        console.log(res)
-                        console.log(res.tempFilePath)
-                        _self.setData({
-                            tempFilePath: res.tempFilePath
-                        });
-                    }
+            const data = JSON.parse(JSON.stringify(this.data.multiBoardData));
+            data.forEach(item => {
+                item.content.forEach(e => {
+                    delete e.rectArea;
                 });
-            } else {
-                this.data.multiBoardData.forEach(e => {
-                    this.data['context' + e.zIndex] = null;
-                });
-                this.setData({
-                    tempFilePath: '',
-                    domShow: {
-                        canvas1: false,
-                        canvas2: false,
-                        canvas3: false
-                    }
-                }, () => {
-                    this.init();
-                });
-            }
+            });
+            return data;
         }
     }
 })

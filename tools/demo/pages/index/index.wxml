@@ -9,7 +9,7 @@
                 <button type="primary" class="save-btn" bindtap="getData">save</button>
                 <button type="primary" class="reload-btn" bindtap="reload">reload</button>
                 <button type="primary" class="reload-btn" bindtap="change">change</button>
-                <switch checked="{{ disableBoard }}" bindchange="disableBoardChange"/>
+                <!-- <switch checked="{{ disableBoard }}" bindchange="disableBoardChange"/> -->
             </view>
             <scroll-view scroll-x="true" scroll-left="0" class='color-list'>
                 <view 
@@ -30,12 +30,12 @@
     <view class="bot">
         <view class="board" style="width:{{viewRect.width}}; height:{{viewRect.height}};">
             <view class="board-con">
-                <board init-data="{{ boardData }}" container-scroll-top="{{ scrollTop }}" disable="{{ disableBoard }}" class="board-comp-1" />
+                <board init-data="{{ boardData }}" container-scroll-top="{{ scrollTop }}" class="board-comp-1" />
             </view>
         </view>
         <view class="board" style="width:{{viewRect.width}}; height:{{viewRect.height}};">
             <view class="board-con">
-                <board init-data="{{ boardData }}" container-scroll-top="{{ scrollTop }}" disable="{{ disableBoard }}" class="board-comp-2" />
+                <board init-data="{{ boardData }}" container-scroll-top="{{ scrollTop }}" class="board-comp-2" />
             </view>
         </view>
     </view>

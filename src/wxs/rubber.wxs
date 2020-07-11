@@ -9,7 +9,7 @@ var rect = {
 }
 
 function touchstart(event, ins) {
-    if (!event.currentTarget.dataset.isrubber || event.currentTarget.dataset.disable) return;
+    if (!event.currentTarget.dataset.isrubber) return;
 
     var touch = event.touches[0] || event.changedTouches[0];
     var parentNodeOffset = event.currentTarget;
@@ -25,7 +25,7 @@ function touchstart(event, ins) {
 }
 
 function touchmove(event, ins) {
-    if (!event.currentTarget.dataset.isrubber || event.currentTarget.dataset.disable) return;
+    if (!event.currentTarget.dataset.isrubber) return;
 
     var touch = event.touches[0] || event.changedTouches[0];
     var parentNodeOffset = event.currentTarget;
@@ -63,7 +63,7 @@ function touchmove(event, ins) {
 }
 
 function touchend(event, ins) {
-    if (!event.currentTarget.dataset.isrubber || event.currentTarget.dataset.disable) return;
+    if (!event.currentTarget.dataset.isrubber) return;
 
     ins.callMethod('rubberEnd', rect);
     ins.selectComponent('.rubber-box').setStyle({
