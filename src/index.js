@@ -52,7 +52,9 @@ Component({
         // 起始点
         beginPoint: null,
         // 橡皮偏移量
-        rubberRange: 0
+        rubberRange: 0,
+        // 画板禁用标识
+        disabled: false
     },
     // ready: function () {
     //     this.init();
@@ -155,7 +157,6 @@ Component({
                 }).exec(res => {
                     const {
                         dpr,
-                        rubberRange
                     } = this.data;
                     const {
                         node,
@@ -198,8 +199,7 @@ Component({
             const {
                 multiBoardData,
                 canvasSettings,
-                zIndexMax,
-                containerIns
+                zIndexMax
             } = this.data;
             const content = multiBoardData[multiBoardData.length - 1].content;
             const len = content.length;
@@ -208,7 +208,7 @@ Component({
 
             for (let i = 0; i < len; i++) {
                 const con = content[i];
-                if (!con) break;
+                if (!con) continue;
 
                 const xMin = con.rectArea[0];
                 const xMax = con.rectArea[1];
@@ -309,8 +309,11 @@ Component({
         touchstart: function (e) {
             let {
                 rubberActive,
-                canvasSettings
+                canvasSettings,
+                disabled
             } = this.data;
+
+            if (disabled) return;
 
             if (e.touches && e.touches.length > 1) {
                 this.data.isDrawing = false;
@@ -332,8 +335,11 @@ Component({
         },
         touchMove: function (e) {
             let {
-                rubberActive
+                rubberActive,
+                disabled
             } = this.data;
+
+            if (disabled) return;
 
             if (e.touches && e.touches.length > 1) {
                 this.data.isDrawing = false;
@@ -349,7 +355,10 @@ Component({
                 rubberActive,
                 multiBoardData,
                 curve,
+                disabled
             } = this.data;
+
+            if (disabled) return;
 
             if (rubberActive) return;
 
@@ -399,7 +408,7 @@ Component({
                 this.data.curve.y.push(coords.y);
                 this.data.curve.p.push(oP);
 
-                if (this.data.curve.x.length > 3) {
+                if (this.data.curve.x.length > 2) {
                     const lastTwoPointsX = this.data.curve.x.slice(-2);
                     const lastTwoPointsY = this.data.curve.y.slice(-2);
                     const controlPoint = {
@@ -549,10 +558,9 @@ Component({
                     };
     
                     for (let k = 0; k < xArr.length; k++) {
-                        if ((k + 2) > xArr.length) break;
                         if (k > 1) {
-                            const lastTwoPointsX = xArr.slice(k, k + 2);
-                            const lastTwoPointsY = yArr.slice(k, k + 2);
+                            const lastTwoPointsX = xArr.slice(k - 1, k + 1);
+                            const lastTwoPointsY = yArr.slice(k - 1, k + 1);
                             const controlPoint = {
                                 x: lastTwoPointsX[0],
                                 y: lastTwoPointsY[0]
@@ -595,6 +603,12 @@ Component({
                 });
             });
             return data;
+        },
+        // 禁用/取消禁用
+        disable: function (disabled) {
+            this.setData({
+                disabled
+            });
         }
     }
 })

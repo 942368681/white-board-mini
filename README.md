@@ -104,4 +104,12 @@ const data = compInstance.getBoardData();
 console.log(data);
 ```
 
+#### 禁用/取消禁用
+```bash
+const compInstance = this.selectComponent('.board-comp');
+
+// boolean: true - 禁用  false - 启用
+instance.disable(boolean);
+```
+
 

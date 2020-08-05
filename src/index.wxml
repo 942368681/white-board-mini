@@ -4,6 +4,7 @@
     data-isRubber="{{ rubberActive }}"
     data-rect="{{ containerIns }}"
     data-containerScrollTop="{{ containerScrollTop }}"
+    data-disabled="{{ disabled }}"
     bindtouchstart="{{ rubber.touchstart }}" 
     bindtouchmove="{{ rubber.touchmove }}" 
     bindtouchend="{{ rubber.touchend }}"
