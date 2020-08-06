@@ -51,6 +51,7 @@ Page({
             lineCap: 'round'
         };
         const initData = {
+            disabled: false,
             canvasSettings: settings,
             zIndexInfo: boardData,
             rubberRange
@@ -153,6 +154,7 @@ Page({
             lineCap: 'round'
         };
         const initData = {
+            disabled: false,
             canvasSettings: settings,
             zIndexInfo: boardData2,
             rubberRange
@@ -179,6 +181,7 @@ Page({
             lineCap: 'round'
         };
         const initData = {
+            disabled: false,
             canvasSettings: settings,
             zIndexInfo: boardData2,
             rubberRange

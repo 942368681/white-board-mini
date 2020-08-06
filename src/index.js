@@ -120,10 +120,12 @@ Component({
                 return;
             }
             const {
+                disabled,
                 canvasSettings,
                 zIndexInfo,
                 rubberRange
             } = initData;
+            this.disable(disabled);
             this.setBaseInfo({rubberRange});
             this.setContainerIns();
             this.setDpr();
@@ -313,6 +315,8 @@ Component({
                 disabled
             } = this.data;
 
+            console.log('触发touchstart', 'disabled: ', disabled);
+
             if (disabled) return;
 
             if (e.touches && e.touches.length > 1) {
@@ -339,6 +343,8 @@ Component({
                 disabled
             } = this.data;
 
+            console.log('触发touchMove', 'disabled: ', disabled);
+
             if (disabled) return;
 
             if (e.touches && e.touches.length > 1) {
@@ -357,6 +363,8 @@ Component({
                 curve,
                 disabled
             } = this.data;
+
+            console.log('触发touchEnd', 'disabled: ', disabled);
 
             if (disabled) return;
 
@@ -407,6 +415,8 @@ Component({
                 this.data.curve.x.push(coords.x);
                 this.data.curve.y.push(coords.y);
                 this.data.curve.p.push(oP);
+
+                console.log('drawing...', ctx.strokeStyle, ctx.lineWidth);
 
                 if (this.data.curve.x.length > 2) {
                     const lastTwoPointsX = this.data.curve.x.slice(-2);
@@ -607,7 +617,7 @@ Component({
         // 禁用/取消禁用
         disable: function (disabled) {
             this.setData({
-                disabled
+                disabled: !!disabled
             });
         }
     }
