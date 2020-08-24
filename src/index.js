@@ -1,4 +1,4 @@
-import utils from './utils';
+// import utils from "./utils";
 
 Component({
     /**
@@ -22,7 +22,7 @@ Component({
         containerIns: null,
         // 防抖定时器
         timer: null,
-        dpr: '',
+        dpr: "",
         // dom
         domShow: {
             canvas1: false,
@@ -56,6 +56,8 @@ Component({
         // 画板禁用标识
         disabled: false
     },
+    // 当前绘制Id
+    pathId: null,
     // ready: function () {
     //     this.init();
     // },
@@ -63,20 +65,22 @@ Component({
      * 监听数据来源变化
      */
     observers: {
-        'initData': function(initData) {
+        initData: function (initData) {
             this.debounce(() => {
                 this.data.multiBoardData.forEach(e => {
-                    this.data['context' + e.zIndex] = null;
+                    this.data["context" + e.zIndex] = null;
                 });
                 this.setData({
-                    domShow: {
-                        canvas1: false,
-                        canvas2: false,
-                        canvas3: false
+                        domShow: {
+                            canvas1: false,
+                            canvas2: false,
+                            canvas3: false
+                        }
+                    },
+                    () => {
+                        this.init();
                     }
-                }, () => {
-                    this.init();
-                });
+                );
             }, 300)();
         }
     },
@@ -96,14 +100,19 @@ Component({
                 this.data.timer = setTimeout(() => {
                     fn();
                 }, delay);
-            }
+            };
         },
         /**
          * 校验初始化参数
          */
         checkInitParams: function (initData) {
             let bool;
-            if (!initData || !initData.canvasSettings || !initData.zIndexInfo || !initData.rubberRange) {
+            if (
+                !initData ||
+                !initData.canvasSettings ||
+                !initData.zIndexInfo ||
+                !initData.rubberRange
+            ) {
                 bool = false;
             } else {
                 bool = true;
@@ -126,7 +135,9 @@ Component({
                 rubberRange
             } = initData;
             this.disable(disabled);
-            this.setBaseInfo({rubberRange});
+            this.setBaseInfo({
+                rubberRange
+            });
             this.setContainerIns();
             this.setDpr();
             this.setMaxIndex(zIndexInfo);
@@ -135,7 +146,7 @@ Component({
         },
         /**
          * 设置基础设置信息
-         * @param {rubberRange} params 
+         * @param {rubberRange} params
          */
         setBaseInfo: function (params) {
             const {
@@ -149,52 +160,67 @@ Component({
          * @param {*} index 索引
          */
         initBoard: function (canvasSettings, zIndexInfo, index) {
-            const attr = 'domShow.canvas' + (index + 1);
+            const attr = "domShow.canvas" + (index + 1);
             this.setData({
-                [attr]: true
-            }, () => {
-                wx.createSelectorQuery().in(this).select(`#board-index-${index + 1}`).fields({
-                    node: true,
-                    size: true
-                }).exec(res => {
-                    const {
-                        dpr,
-                    } = this.data;
-                    const {
-                        node,
-                        width,
-                        height
-                    } = res[0];
-                    const zIndex = zIndexInfo[index].zIndex;
-                    const baseContainerRect = zIndexInfo[index].containerRect;
-                    for (let i = 0; i < zIndexInfo[index].content.length; i++) {
-                        zIndexInfo[index].content[i].rectArea = this.getRectArea(zIndexInfo[index].content[i]);
-                    }
-                    node.width = width * dpr;
-                    node.height = height * dpr;
-                    this.data['context' + zIndex] = node.getContext('2d');
-                    this.data['context' + zIndex].scale(dpr, dpr);
-                    zIndexInfo[index].containerRect = {
-                        width: Number(width.toFixed(0)),
-                        height: Number(height.toFixed(0))
-                    };
-                    this.dataEcho(canvasSettings, zIndexInfo[index], zIndex, false, baseContainerRect);
-                    if (index === zIndexInfo.length - 1) { // 当前最顶层(操作层)
-                        this.data.activeCanvasNode = node;
-                        node.requestAnimationFrame(this.drawing.bind(this));
-                    } else {
-                        this.initBoard(canvasSettings, zIndexInfo, (index + 1));
-                    }
-                });
-            });
+                    [attr]: true
+                },
+                () => {
+                    wx.createSelectorQuery()
+                        .in(this)
+                        .select(`#board-index-${index + 1}`)
+                        .fields({
+                            node: true,
+                            size: true
+                        })
+                        .exec(res => {
+                            const {
+                                dpr
+                            } = this.data;
+                            const {
+                                node,
+                                width,
+                                height
+                            } = res[0];
+                            const zIndex = zIndexInfo[index].zIndex;
+                            const baseContainerRect = zIndexInfo[index].containerRect;
+                            for (let i = 0; i < zIndexInfo[index].content.length; i++) {
+                                zIndexInfo[index].content[i].rectArea = this.getRectArea(
+                                    zIndexInfo[index].content[i]
+                                );
+                            }
+                            node.width = width * dpr;
+                            node.height = height * dpr;
+                            this.data["context" + zIndex] = node.getContext("2d");
+                            this.data["context" + zIndex].scale(dpr, dpr);
+                            zIndexInfo[index].containerRect = {
+                                width: Number(width.toFixed(0)),
+                                height: Number(height.toFixed(0))
+                            };
+                            this.dataEcho(
+                                canvasSettings,
+                                zIndexInfo[index],
+                                zIndex,
+                                false,
+                                baseContainerRect
+                            );
+                            if (index === zIndexInfo.length - 1) {
+                                // 当前最顶层(操作层)
+                                this.data.activeCanvasNode = node;
+                                node.requestAnimationFrame(this.drawing.bind(this));
+                            } else {
+                                this.initBoard(canvasSettings, zIndexInfo, index + 1);
+                            }
+                        });
+                }
+            );
         },
         getCoords: function (e) {
             let pos = e.touches[0];
             return {
-                x: Number((pos.x).toFixed(0)),
-                y: Number((pos.y).toFixed(0)),
+                x: Number(pos.x.toFixed(0)),
+                y: Number(pos.y.toFixed(0)),
                 pressure: 1
-            }
+            };
         },
         // 判断区域内部的轨迹
         checkInnerWriting: function (rect1) {
@@ -222,7 +248,7 @@ Component({
                     startY: yMin,
                     width: xMax - xMin,
                     height: yMax - yMin
-                }
+                };
                 const bool = this.isOverlap(rect1, rect2);
 
                 if (bool) {
@@ -232,12 +258,17 @@ Component({
                     }
                 }
             }
-            this.dataEcho(canvasSettings, multiBoardData[multiBoardData.length - 1], zIndexMax, true);
+            this.dataEcho(
+                canvasSettings,
+                multiBoardData[multiBoardData.length - 1],
+                zIndexMax,
+                true
+            );
         },
         /**
          * 判断是否这个轨迹得某个点在矩形范围内
-         * @param {canvasSettings, path, rectArea} oContent 
-         * @param {startX, startY, width, height} rect 
+         * @param {canvasSettings, path, rectArea} oContent
+         * @param {startX, startY, width, height} rect
          */
         shouldDelete: function (oContent, rect) {
             const {
@@ -264,8 +295,8 @@ Component({
         },
         /**
          * 检测点在矩形区域内
-         * @param {x, y} coords 
-         * @param {xMin, xMax, yMin, yMax} rectArea 
+         * @param {x, y} coords
+         * @param {xMin, xMax, yMin, yMax} rectArea
          */
         isFitPath: function (coords, rectArea) {
             if (coords.x <= rectArea[0]) {
@@ -280,33 +311,50 @@ Component({
             if (coords.y <= rectArea[2]) {
                 return false;
             }
-    
+
             return true;
         },
         /**
          * 判断两个矩形是否有重叠
-         * @param {startX, startY, width, height} rect1 
-         * @param {startX, startY, width, height} rect2 
+         * @param {startX, startY, width, height} rect1
+         * @param {startX, startY, width, height} rect2
          */
         isOverlap: function (rect1, rect2) {
-            const l1 = { x: rect1.startX, y: rect1.startY };
-            const r1 = { x: rect1.startX + rect1.width, y: rect1.startY + rect1.height };
-            const l2 = { x: rect2.startX, y: rect2.startY };
-            const r2 = { x: rect2.startX + rect2.width, y: rect2.startY + rect2.height };
+            const l1 = {
+                x: rect1.startX,
+                y: rect1.startY
+            };
+            const r1 = {
+                x: rect1.startX + rect1.width,
+                y: rect1.startY + rect1.height
+            };
+            const l2 = {
+                x: rect2.startX,
+                y: rect2.startY
+            };
+            const r2 = {
+                x: rect2.startX + rect2.width,
+                y: rect2.startY + rect2.height
+            };
 
-            if (
-              l1.x > r2.x ||
-              l2.x > r1.x ||
-              l1.y > r2.y ||
-              l2.y > r1.y
-            ) {
-                return false
+            if (l1.x > r2.x || l2.x > r1.x || l1.y > r2.y || l2.y > r1.y) {
+                return false;
             } else {
                 return true;
-            };
+            }
         },
-        rubberEnd: function ({startX, startY, width, height}) {
-            this.checkInnerWriting({startX, startY, width, height});
+        rubberEnd: function ({
+            startX,
+            startY,
+            width,
+            height
+        }) {
+            this.checkInnerWriting({
+                startX,
+                startY,
+                width,
+                height
+            });
         },
         touchstart: function (e) {
             let {
@@ -315,18 +363,19 @@ Component({
                 disabled
             } = this.data;
 
-            console.log('触发touchstart', 'disabled: ', disabled);
+            console.log("触发touchstart", "disabled: ", disabled);
 
             if (disabled) return;
 
             if (e.touches && e.touches.length > 1) {
                 this.data.isDrawing = false;
                 return;
-            };
+            }
 
             if (rubberActive) return;
 
             this.data.coords = this.getCoords(e);
+            this.pathId = Date.now();
             this.data.curve = {
                 p: [],
                 x: [],
@@ -343,18 +392,20 @@ Component({
                 disabled
             } = this.data;
 
-            console.log('触发touchMove', 'disabled: ', disabled);
+            console.log("触发touchMove", "disabled: ", disabled);
 
             if (disabled) return;
 
             if (e.touches && e.touches.length > 1) {
                 this.data.isDrawing = false;
                 return;
-            };
+            }
 
             if (rubberActive) return;
 
             this.data.coords = this.getCoords(e);
+            this.pathId = Date.now();
+            console.log("touchMove this.pathId: ", this.pathId);
         },
         touchEnd: function () {
             const {
@@ -364,7 +415,7 @@ Component({
                 disabled
             } = this.data;
 
-            console.log('触发touchEnd', 'disabled: ', disabled);
+            console.log("触发touchEnd", "disabled: ", disabled);
 
             if (disabled) return;
 
@@ -372,7 +423,10 @@ Component({
 
             this.data.isDrawing = false;
             this.data.curve.rectArea = this.getRectArea(curve);
-            multiBoardData[multiBoardData.length - 1].content.push(curve);
+            // 确保canvasSettings存在
+            if (curve.canvasSettings) {
+                multiBoardData[multiBoardData.length - 1].content.push(curve);
+            }
             this.data.curve = null;
 
             // console.log(JSON.stringify(multiBoardData));
@@ -391,32 +445,41 @@ Component({
             };
             return [
                 obj.xMin - rubberRange <= 0 ? 0 : obj.xMin - rubberRange,
-                obj.xMax + rubberRange >= containerIns.width ? containerIns.width : obj.xMax + rubberRange,
+                obj.xMax + rubberRange >= containerIns.width ?
+                containerIns.width :
+                obj.xMax + rubberRange,
                 obj.yMin - rubberRange <= 0 ? 0 : obj.yMin - rubberRange,
-                obj.yMax + rubberRange >= containerIns.height ? containerIns.height : obj.yMax + rubberRange
+                obj.yMax + rubberRange >= containerIns.height ?
+                containerIns.height :
+                obj.yMax + rubberRange
             ];
         },
         drawing: function () {
             let {
                 isDrawing,
-                activeCanvasNode,
+                activeCanvasNode
             } = this.data;
 
             if (isDrawing) {
+                if (this.pathId === this.lastPathId) {
+                    activeCanvasNode.requestAnimationFrame(this.drawing.bind(this));
+                    return;
+                }
+
                 let {
                     coords,
                     zIndexMax,
                     prevPressure
                 } = this.data;
 
-                const ctx = this.data['context' + zIndexMax];
+                const ctx = this.data["context" + zIndexMax];
 
-                const oP = Number((coords.pressure*4096).toFixed(0));
+                const oP = Number((coords.pressure * 4096).toFixed(0));
                 this.data.curve.x.push(coords.x);
                 this.data.curve.y.push(coords.y);
                 this.data.curve.p.push(oP);
 
-                console.log('drawing...', ctx.strokeStyle, ctx.lineWidth);
+                console.log("drawing...", ctx.strokeStyle, ctx.lineWidth);
 
                 if (this.data.curve.x.length > 2) {
                     const lastTwoPointsX = this.data.curve.x.slice(-2);
@@ -424,23 +487,32 @@ Component({
                     const controlPoint = {
                         x: lastTwoPointsX[0],
                         y: lastTwoPointsY[0]
-                    }
+                    };
                     const endPoint = {
                         x: (lastTwoPointsX[0] + lastTwoPointsX[1]) / 2,
                         y: (lastTwoPointsY[0] + lastTwoPointsY[1]) / 2
-                    }
+                    };
 
                     if (!prevPressure || prevPressure !== oP) {
                         this.data.prevPressure = oP;
                         this.setPointSize(oP);
                     }
 
-                    ctx.beginPath();
-                    ctx.moveTo(this.data.beginPoint.x, this.data.beginPoint.y);
-                    ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, endPoint.x, endPoint.y);
-                    ctx.stroke();
-
-                    this.data.beginPoint = endPoint;
+                    try {
+                        ctx.beginPath();
+                        ctx.moveTo(this.data.beginPoint.x, this.data.beginPoint.y);
+                        ctx.quadraticCurveTo(
+                            controlPoint.x,
+                            controlPoint.y,
+                            endPoint.x,
+                            endPoint.y
+                        );
+                        ctx.stroke();
+                        this.data.beginPoint = endPoint;
+                        this.lastPathId = this.pathId;
+                    } catch (error) {
+                        console.log("error: ", error);
+                    }
                 } else {
                     this.data.beginPoint = {
                         x: this.data.curve.x[0],
@@ -452,11 +524,15 @@ Component({
         },
         // 设置容器实例
         setContainerIns: function () {
-            wx.createSelectorQuery().in(this).select('#board-box').boundingClientRect(rect => {
-                this.setData({
-                    containerIns: rect
-                });
-            }).exec();
+            wx.createSelectorQuery()
+                .in(this)
+                .select("#board-box")
+                .boundingClientRect(rect => {
+                    this.setData({
+                        containerIns: rect
+                    });
+                })
+                .exec();
         },
         // 设置dpr
         setDpr: function () {
@@ -468,26 +544,33 @@ Component({
         },
         // 设置最高层级
         setMaxIndex: function (zIndexInfo) {
-            this.data.zIndexMax = zIndexInfo.sort((prev, next) => prev.zIndex - next.zIndex)[zIndexInfo.length - 1].zIndex;
+            this.data.zIndexMax = zIndexInfo.sort(
+                (prev, next) => prev.zIndex - next.zIndex
+            )[zIndexInfo.length - 1].zIndex;
         },
         // 设置
         setSettings: function (settings, zIndex) {
-            this.data.canvasSettings = {...this.data.canvasSettings, ...settings};
-            
+            this.data.canvasSettings = {
+                ...this.data.canvasSettings,
+                ...settings
+            };
+
             let color, width, cap, join;
             const {
                 canvasSettings: {
-                    inputType, 
-                    strokeStyle, 
+                    inputType,
+                    strokeStyle,
                     lineWidth,
                     lineCap,
                     lineJoin
                 },
                 zIndexMax
             } = this.data;
-            const ctx = zIndex ? this.data['context' + zIndex] : this.data['context' + zIndexMax];
+            const ctx = zIndex ?
+                this.data["context" + zIndex] :
+                this.data["context" + zIndexMax];
 
-            if (inputType === 'rubber') {
+            if (inputType === "rubber") {
                 this.setData({
                     rubberActive: true
                 });
@@ -497,27 +580,32 @@ Component({
                 });
                 color = strokeStyle;
                 width = lineWidth;
-                cap = lineCap || 'round';
-                join = lineJoin || 'round';
+                cap = lineCap || "round";
+                join = lineJoin || "round";
             }
-            ctx.lineCap = cap; //设置线条端点的样式
-            ctx.lineJoin = join; //设置两线相交处的样式
-            ctx.strokeStyle = color; //设置描边颜色
-            ctx.lineWidth = width; //设置线条宽度
+
+            if (ctx) {
+                ctx.lineCap = cap; //设置线条端点的样式
+                ctx.lineJoin = join; //设置两线相交处的样式
+                ctx.strokeStyle = color; //设置描边颜色
+                ctx.lineWidth = width; //设置线条宽度
+            }
         },
         setPointSize: function (pressure, zIndex) {
             const {
                 zIndexMax
             } = this.data;
-            const ctx = zIndex ? this.data['context' + zIndex] : this.data['context' + zIndexMax];
-            ctx.lineWidth = this.data.canvasSettings.lineWidth * (pressure/4096);
+            const ctx = zIndex ?
+                this.data["context" + zIndex] :
+                this.data["context" + zIndexMax];
+            ctx.lineWidth = this.data.canvasSettings.lineWidth * (pressure / 4096);
         },
         // 清除当前层画板内容
         clearAll: function (zIndex) {
             const {
                 containerIns
             } = this.data;
-            const ctx = this.data['context' + zIndex];
+            const ctx = this.data["context" + zIndex];
             ctx.clearRect(0, 0, containerIns.width, containerIns.height);
         },
         /**
@@ -528,13 +616,19 @@ Component({
          * @param {*} needClear 是否需要清除当前层级画板
          * @param {*} baseContainerRect 初始化基准宽高
          */
-        dataEcho: function (originalSettings, info, zIndex, needClear, baseContainerRect) {
+        dataEcho: function (
+            originalSettings,
+            info,
+            zIndex,
+            needClear,
+            baseContainerRect
+        ) {
             if (!baseContainerRect) {
                 baseContainerRect = info.containerRect;
             }
             if (needClear) this.clearAll(zIndex);
             const {
-                containerIns,
+                containerIns
             } = this.data;
             const content = info.content;
             const baseWidth = baseContainerRect.width;
@@ -542,56 +636,73 @@ Component({
             let prevPressure = null;
 
             if (content.length) {
-                const ctx = this.data['context' + zIndex];
+                const ctx = this.data["context" + zIndex];
                 for (let j = 0; j < content.length; j++) {
                     const oPathInfo = content[j];
                     const xArr = oPathInfo.x;
                     const yArr = oPathInfo.y;
                     const pArr = oPathInfo.p;
 
-                    if (baseWidth !== info.containerRect.width || baseHeight !== info.containerRect.height) {
+                    if (
+                        baseWidth !== info.containerRect.width ||
+                        baseHeight !== info.containerRect.height
+                    ) {
                         for (let index = 0; index < xArr.length; index++) {
-                            xArr[index] = Number(((xArr[index]/baseWidth) * containerIns.width).toFixed(0));
+                            xArr[index] = Number(
+                                ((xArr[index] / baseWidth) * containerIns.width).toFixed(0)
+                            );
                         }
                         for (let index = 0; index < yArr.length; index++) {
-                            yArr[index] = Number(((yArr[index]/baseHeight) * containerIns.height).toFixed(0));
+                            yArr[index] = Number(
+                                ((yArr[index] / baseHeight) * containerIns.height).toFixed(0)
+                            );
                         }
                         content[j].rectArea = this.getRectArea(content[j]);
                     }
 
-                    if (!oPathInfo || !pArr.length || !xArr.length || !yArr.length) continue;
-    
+                    if (!oPathInfo || !pArr.length || !xArr.length || !yArr.length)
+                        continue;
+
                     this.setSettings(oPathInfo.canvasSettings, zIndex);
                     this.data.beginPoint = {
                         x: xArr[0],
                         y: yArr[0]
                     };
-    
-                    for (let k = 0; k < xArr.length; k++) {
-                        if (k > 1) {
-                            const lastTwoPointsX = xArr.slice(k - 1, k + 1);
-                            const lastTwoPointsY = yArr.slice(k - 1, k + 1);
-                            const controlPoint = {
-                                x: lastTwoPointsX[0],
-                                y: lastTwoPointsY[0]
-                            }
-                            const endPoint = {
-                                x: (lastTwoPointsX[0] + lastTwoPointsX[1]) / 2,
-                                y: (lastTwoPointsY[0] + lastTwoPointsY[1]) / 2
-                            }
 
-                            if (!prevPressure || prevPressure !== pArr[k]) {
-                                prevPressure = pArr[k];
-                                this.setPointSize(pArr[k], zIndex);
+                    try {
+                        for (let k = 0; k < xArr.length; k++) {
+                            if (k > 1) {
+                                const lastTwoPointsX = xArr.slice(k - 1, k + 1);
+                                const lastTwoPointsY = yArr.slice(k - 1, k + 1);
+                                const controlPoint = {
+                                    x: lastTwoPointsX[0],
+                                    y: lastTwoPointsY[0]
+                                };
+                                const endPoint = {
+                                    x: (lastTwoPointsX[0] + lastTwoPointsX[1]) / 2,
+                                    y: (lastTwoPointsY[0] + lastTwoPointsY[1]) / 2
+                                };
+
+                                if (!prevPressure || prevPressure !== pArr[k]) {
+                                    prevPressure = pArr[k];
+                                    this.setPointSize(pArr[k], zIndex);
+                                }
+
+                                ctx.beginPath();
+                                ctx.moveTo(this.data.beginPoint.x, this.data.beginPoint.y);
+                                ctx.quadraticCurveTo(
+                                    controlPoint.x,
+                                    controlPoint.y,
+                                    endPoint.x,
+                                    endPoint.y
+                                );
+                                ctx.stroke();
+
+                                this.data.beginPoint = endPoint;
                             }
-
-                            ctx.beginPath();
-                            ctx.moveTo(this.data.beginPoint.x, this.data.beginPoint.y);
-                            ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, endPoint.x, endPoint.y);
-                            ctx.stroke();
-
-                            this.data.beginPoint = endPoint;
                         }
+                    } catch (error) {
+                        console.log("error: ", error);
                     }
                 }
             }
@@ -621,4 +732,4 @@ Component({
             });
         }
     }
-})
+});
