@@ -670,6 +670,11 @@ Component({
                     };
 
                     try {
+                        if (xArr.length <= 1)
+                            return;
+
+                        ctx.beginPath();
+
                         for (let k = 0; k < xArr.length; k++) {
                             if (k > 1) {
                                 const lastTwoPointsX = xArr.slice(k - 1, k + 1);
@@ -688,7 +693,6 @@ Component({
                                     this.setPointSize(pArr[k], zIndex);
                                 }
 
-                                ctx.beginPath();
                                 ctx.moveTo(this.data.beginPoint.x, this.data.beginPoint.y);
                                 ctx.quadraticCurveTo(
                                     controlPoint.x,
@@ -696,10 +700,10 @@ Component({
                                     endPoint.x,
                                     endPoint.y
                                 );
-                                ctx.stroke();
 
                                 this.data.beginPoint = endPoint;
                             }
+                            ctx.stroke();
                         }
                     } catch (error) {
                         console.log("error: ", error);
