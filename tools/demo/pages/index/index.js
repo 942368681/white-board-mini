@@ -156,7 +156,7 @@ Page({
         const initData = {
             disabled: false,
             canvasSettings: settings,
-            zIndexInfo: boardData2,
+            zIndexInfo: boardData,
             rubberRange
         };
         
@@ -183,7 +183,7 @@ Page({
         const initData = {
             disabled: false,
             canvasSettings: settings,
-            zIndexInfo: boardData2,
+            zIndexInfo: boardData,
             rubberRange
         };
         this.setData({

@@ -38,6 +38,46 @@
                 <board init-data="{{ boardData }}" container-scroll-top="{{ scrollTop }}" class="board-comp-2" />
             </view>
         </view>
+        <view class="board" style="width:{{viewRect.width}}; height:{{viewRect.height}};">
+            <view class="board-con">
+                <board init-data="{{ boardData }}" container-scroll-top="{{ scrollTop }}" class="board-comp-2" />
+            </view>
+        </view>
+        <view class="board" style="width:{{viewRect.width}}; height:{{viewRect.height}};">
+            <view class="board-con">
+                <board init-data="{{ boardData }}" container-scroll-top="{{ scrollTop }}" class="board-comp-2" />
+            </view>
+        </view>
+        <view class="board" style="width:{{viewRect.width}}; height:{{viewRect.height}};">
+            <view class="board-con">
+                <board init-data="{{ boardData }}" container-scroll-top="{{ scrollTop }}" class="board-comp-2" />
+            </view>
+        </view>
+        <view class="board" style="width:{{viewRect.width}}; height:{{viewRect.height}};">
+            <view class="board-con">
+                <board init-data="{{ boardData }}" container-scroll-top="{{ scrollTop }}" class="board-comp-2" />
+            </view>
+        </view>
+        <view class="board" style="width:{{viewRect.width}}; height:{{viewRect.height}};">
+            <view class="board-con">
+                <board init-data="{{ boardData }}" container-scroll-top="{{ scrollTop }}" class="board-comp-2" />
+            </view>
+        </view>
+        <view class="board" style="width:{{viewRect.width}}; height:{{viewRect.height}};">
+            <view class="board-con">
+                <board init-data="{{ boardData }}" container-scroll-top="{{ scrollTop }}" class="board-comp-2" />
+            </view>
+        </view>
+        <view class="board" style="width:{{viewRect.width}}; height:{{viewRect.height}};">
+            <view class="board-con">
+                <board init-data="{{ boardData }}" container-scroll-top="{{ scrollTop }}" class="board-comp-2" />
+            </view>
+        </view>
+        <view class="board" style="width:{{viewRect.width}}; height:{{viewRect.height}};">
+            <view class="board-con">
+                <board init-data="{{ boardData }}" container-scroll-top="{{ scrollTop }}" class="board-comp-2" />
+            </view>
+        </view>
     </view>
 </view>
 <!-- </scroll-view> -->

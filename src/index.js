@@ -23,6 +23,7 @@ Component({
         // 防抖定时器
         timer: null,
         dpr: "",
+        inited: false,
         // dom
         domShow: {
             canvas1: false,
@@ -54,8 +55,9 @@ Component({
         // 橡皮偏移量
         rubberRange: 0,
         // 画板禁用标识
-        disabled: false
+        disabled: false,
     },
+    
     // 当前绘制Id
     pathId: null,
     // ready: function () {
@@ -70,18 +72,20 @@ Component({
                 this.data.multiBoardData.forEach(e => {
                     this.data["context" + e.zIndex] = null;
                 });
-                this.setData({
-                        domShow: {
-                            canvas1: false,
-                            canvas2: false,
-                            canvas3: false
-                        }
-                    },
-                    () => {
+                this.clearAll(this.data.zIndexMax);
+                // this.setData({
+                //         domShow: {
+                //             canvas1: false,
+                //             canvas2: false,
+                //             canvas3: false
+                //         }
+                //     },
+                //     () => {
+
                         this.init();
-                    }
-                );
-            }, 1000)();
+                //     }
+                // );
+            }, 300)();
         }
     },
     /**
@@ -190,8 +194,13 @@ Component({
                             }
                             node.width = width * dpr;
                             node.height = height * dpr;
-                            this.data["context" + zIndex] = node.getContext("2d");
-                            this.data["context" + zIndex].scale(dpr, dpr);
+                            let context = node.getContext("2d");
+                            this.data["context" + zIndex] = context;
+                            if (!this.data.inited) {
+                                this.data["context" + zIndex].scale(dpr, dpr);
+                                this.data.inited = true;
+                            }
+                           
                             zIndexInfo[index].containerRect = {
                                 width: Number(width.toFixed(0)),
                                 height: Number(height.toFixed(0))
@@ -606,7 +615,9 @@ Component({
                 containerIns
             } = this.data;
             const ctx = this.data["context" + zIndex];
-            ctx.clearRect(0, 0, containerIns.width, containerIns.height);
+            if (ctx) {
+                ctx.clearRect(0, 0, containerIns.width, containerIns.height);
+            }
         },
         /**
          * 数据回显
