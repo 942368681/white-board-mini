@@ -433,7 +433,7 @@ Component({
             this.data.isDrawing = false;
             this.data.curve.rectArea = this.getRectArea(curve);
             // 确保canvasSettings存在
-            if (curve.canvasSettings) {
+            if (curve.canvasSettings && curve.x.length) {
                 multiBoardData[multiBoardData.length - 1].content.push(curve);
             }
             this.data.curve = null;
@@ -645,7 +645,6 @@ Component({
             const baseWidth = baseContainerRect.width;
             const baseHeight = baseContainerRect.height;
             let prevPressure = null;
-
             if (content.length) {
                 const ctx = this.data["context" + zIndex];
                 for (let j = 0; j < content.length; j++) {
@@ -682,7 +681,7 @@ Component({
 
                     try {
                         if (xArr.length <= 1)
-                            return;
+                        continue;
 
                         ctx.beginPath();
 

@@ -1,6 +1,6 @@
 {
   "name": "white-board-mini",
-  "version": "1.3.7",
+  "version": "1.3.8",
   "description": "小程序画板组件",
   "main": "miniprogram_dist/index.js",
   "scripts": {
