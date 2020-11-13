@@ -733,6 +733,12 @@ Component({
         getBoardData: function () {
             const data = JSON.parse(JSON.stringify(this.data.multiBoardData));
             data.forEach(item => {
+                if (!item.containerRect) {
+                    item.containerRect = {
+                        width: Number((this.data.containerIns.width).toFixed(0)),
+                        height: Number((this.data.containerIns.height).toFixed(0))
+                    };
+                }
                 item.content.forEach(e => {
                     delete e.rectArea;
                 });
