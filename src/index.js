@@ -18,6 +18,8 @@ Component({
      * 组件的初始数据
      */
     data: {
+        // 屏幕宽度
+        screenWidth: wx.getSystemInfoSync().screenWidth,
         // 容器实例
         containerIns: null,
         // 防抖定时器
@@ -372,8 +374,6 @@ Component({
                 disabled
             } = this.data;
 
-            console.log("触发touchstart", "disabled: ", disabled);
-
             if (disabled) return;
 
             if (e.touches && e.touches.length > 1) {
@@ -401,8 +401,6 @@ Component({
                 disabled
             } = this.data;
 
-            console.log("触发touchMove", "disabled: ", disabled);
-
             if (disabled) return;
 
             if (e.touches && e.touches.length > 1) {
@@ -414,7 +412,6 @@ Component({
 
             this.data.coords = this.getCoords(e);
             this.pathId = Date.now();
-            console.log("touchMove this.pathId: ", this.pathId);
         },
         touchEnd: function () {
             const {
@@ -423,8 +420,6 @@ Component({
                 curve,
                 disabled
             } = this.data;
-
-            console.log("触发touchEnd", "disabled: ", disabled);
 
             if (disabled) return;
 
@@ -487,8 +482,6 @@ Component({
                 this.data.curve.x.push(coords.x);
                 this.data.curve.y.push(coords.y);
                 this.data.curve.p.push(oP);
-
-                console.log("drawing...", ctx.strokeStyle, ctx.lineWidth);
 
                 if (this.data.curve.x.length > 2) {
                     const lastTwoPointsX = this.data.curve.x.slice(-2);
@@ -573,7 +566,8 @@ Component({
                     lineCap,
                     lineJoin
                 },
-                zIndexMax
+                zIndexMax,
+                screenWidth
             } = this.data;
             const ctx = zIndex ?
                 this.data["context" + zIndex] :
@@ -597,17 +591,18 @@ Component({
                 ctx.lineCap = cap; //设置线条端点的样式
                 ctx.lineJoin = join; //设置两线相交处的样式
                 ctx.strokeStyle = color; //设置描边颜色
-                ctx.lineWidth = width; //设置线条宽度
+                ctx.lineWidth = width * (screenWidth / 750); //设置线条宽度
             }
         },
         setPointSize: function (pressure, zIndex) {
             const {
-                zIndexMax
+                zIndexMax,
+                screenWidth
             } = this.data;
             const ctx = zIndex ?
                 this.data["context" + zIndex] :
                 this.data["context" + zIndexMax];
-            ctx.lineWidth = this.data.canvasSettings.lineWidth * (pressure / 4096);
+            ctx.lineWidth = this.data.canvasSettings.lineWidth * (screenWidth / 750) * (pressure / 4096);
         },
         // 清除当前层画板内容
         clearAll: function (zIndex) {

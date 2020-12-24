@@ -28,7 +28,7 @@ Page({
         switchChecked: false
     },
     switchChange: function (ev) {
-        const compInstance = this.selectComponent('.board-comp');
+        const compInstance = this.selectComponent('.board-comp-1');
         if (ev.detail.value) {
             compInstance.changeHandleComps(true);
         } else {
@@ -72,15 +72,14 @@ Page({
         this.setData({
             inputType
         }, () => {
-            // const compInstance = this.selectComponent('.board-comp');
             const compInstance1 = this.selectComponent('.board-comp-1');
-            const compInstance2 = this.selectComponent('.board-comp-2');
+            // const compInstance2 = this.selectComponent('.board-comp-2');
             this.setUpBoard(compInstance1, {
                 inputType
             });
-            this.setUpBoard(compInstance2, {
-                inputType
-            });
+            // this.setUpBoard(compInstance2, {
+            //     inputType
+            // });
         });
     },
     colorChange: function (ev) {
@@ -95,15 +94,14 @@ Page({
         this.setData({
             currColorIndex: index
         }, () => {
-            // const compInstance = this.selectComponent('.board-comp');
             const compInstance1 = this.selectComponent('.board-comp-1');
-            const compInstance2 = this.selectComponent('.board-comp-2');
+            // const compInstance2 = this.selectComponent('.board-comp-2');
             this.setUpBoard(compInstance1, {
                 strokeStyle: colorList[index]
             });
-            this.setUpBoard(compInstance2, {
-                strokeStyle: colorList[index]
-            });
+            // this.setUpBoard(compInstance2, {
+            //     strokeStyle: colorList[index]
+            // });
         });
     },
     lineWidthChange: function (ev) {
@@ -111,15 +109,14 @@ Page({
         this.setData({
             lineWidth: value
         }, () => {
-            // const compInstance = this.selectComponent('.board-comp');
             const compInstance1 = this.selectComponent('.board-comp-1');
-            const compInstance2 = this.selectComponent('.board-comp-2');
+            // const compInstance2 = this.selectComponent('.board-comp-2');
             this.setUpBoard(compInstance1, {
                 lineWidth: value
             });
-            this.setUpBoard(compInstance2, {
-                lineWidth: value
-            });
+            // this.setUpBoard(compInstance2, {
+            //     lineWidth: value
+            // });
         });
     },
     // 白板设置（输入类型，颜色，粗细...）
@@ -130,12 +127,11 @@ Page({
     },
     // 获取白板数据
     getData: function () {
-        // const compInstance = this.selectComponent('.board-comp');
         const compInstance1 = this.selectComponent('.board-comp-1');
-        const compInstance2 = this.selectComponent('.board-comp-2');
+        // const compInstance2 = this.selectComponent('.board-comp-2');
         const data1 = compInstance1.getBoardData();
-        const data2 = compInstance2.getBoardData();
-        console.log(data1, data2);
+        // const data2 = compInstance2.getBoardData();
+        console.log(data1);
     },
     // 重置数据
     reload: function () {
@@ -204,8 +200,8 @@ Page({
             disableBoard: ev.detail.value
         });
         const compInstance1 = this.selectComponent('.board-comp-1');
-        const compInstance2 = this.selectComponent('.board-comp-2');
+        // const compInstance2 = this.selectComponent('.board-comp-2');
         compInstance1.disable(ev.detail.value);
-        compInstance2.disable(ev.detail.value);
+        // compInstance2.disable(ev.detail.value);
     },
 })
