@@ -131,7 +131,8 @@ Page({
         // const compInstance2 = this.selectComponent('.board-comp-2');
         const data1 = compInstance1.getBoardData();
         // const data2 = compInstance2.getBoardData();
-        console.log(data1);
+        const coefficient = compInstance1.getCoefficient();
+        console.log(data1, coefficient);
     },
     // 重置数据
     reload: function () {

@@ -18,8 +18,8 @@ Component({
      * 组件的初始数据
      */
     data: {
-        // 屏幕宽度
-        screenWidth: wx.getSystemInfoSync().screenWidth,
+        // px转prx系数
+        coefficient: wx.getSystemInfoSync().screenWidth / 750,
         // 容器实例
         containerIns: null,
         // 防抖定时器
@@ -567,7 +567,7 @@ Component({
                     lineJoin
                 },
                 zIndexMax,
-                screenWidth
+                coefficient
             } = this.data;
             const ctx = zIndex ?
                 this.data["context" + zIndex] :
@@ -591,18 +591,18 @@ Component({
                 ctx.lineCap = cap; //设置线条端点的样式
                 ctx.lineJoin = join; //设置两线相交处的样式
                 ctx.strokeStyle = color; //设置描边颜色
-                ctx.lineWidth = width * (screenWidth / 750); //设置线条宽度
+                ctx.lineWidth = width * coefficient; //设置线条宽度
             }
         },
         setPointSize: function (pressure, zIndex) {
             const {
                 zIndexMax,
-                screenWidth
+                coefficient
             } = this.data;
             const ctx = zIndex ?
                 this.data["context" + zIndex] :
                 this.data["context" + zIndexMax];
-            ctx.lineWidth = this.data.canvasSettings.lineWidth * (screenWidth / 750) * (pressure / 4096);
+            ctx.lineWidth = this.data.canvasSettings.lineWidth * coefficient * (pressure / 4096);
         },
         // 清除当前层画板内容
         clearAll: function (zIndex) {
@@ -738,7 +738,14 @@ Component({
                     delete e.rectArea;
                 });
             });
-            return data;
+            return {
+                data,
+                coefficient: this.data.coefficient
+            };
+        },
+        // 获取 px => rpx 系数
+        getCoefficient: function () {
+            return this.data.coefficient;
         },
         // 禁用/取消禁用
         disable: function (disabled) {
