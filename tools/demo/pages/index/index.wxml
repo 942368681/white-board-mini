@@ -7,8 +7,8 @@
                 <icon class="iconfont iconcachu {{ inputType === 'rubber' ? 'active' : '' }}" data-type="rubber"></icon>
                 <!-- <switch checked="{{ switchChecked }}" bindchange="switchChange"/> -->
                 <button type="primary" class="save-btn" bindtap="getData">save</button>
-                <button type="primary" class="reload-btn" bindtap="reload">reload</button>
-                <button type="primary" class="reload-btn" bindtap="change">change</button>
+                <!-- <button type="primary" class="reload-btn" bindtap="reload">reload</button> -->
+                <!-- <button type="primary" class="reload-btn" bindtap="change">change</button> -->
                 <switch checked="{{ disableBoard }}" bindchange="disableBoardChange"/>
             </view>
             <scroll-view scroll-x="true" scroll-left="0" class='color-list'>

@@ -9,6 +9,9 @@
 $ npm install -S white-board-mini
 ```
 
+## 演示
+![img](https://github.com/942368681/whiteBoard-new/blob/master/assets/draw.gif)
+
 ## 使用
 
 [小程序使用npm第三方组件请参阅官方文档](https://developers.weixin.qq.com/miniprogram/dev/devtools/npm.html)
