@@ -10,7 +10,7 @@ $ npm install -S white-board-mini
 ```
 
 ## 演示
-![img](https://github.com/942368681/whiteBoard-new/blob/master/assets/draw.gif)
+![img](https://github.com/942368681/white-board-mini/blob/master/assets/draw.gif)
 
 ## 使用
 
